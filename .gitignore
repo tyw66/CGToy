@@ -1,0 +1,10 @@
+# 
+*.ini
+
+# for python 
+*.pyc
+
+# for qt
+build*
+
+*.exe
