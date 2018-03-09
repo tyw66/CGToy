@@ -17,7 +17,7 @@ void heart1(){
 		for(float x=-1.5f; x<1.5f; x+=0.05f){
 			float a=x*x+y*y-1;
 			float f=a*a*a-x*x*y*y*y;
-			putchar(f<=0.0f?".:-=*%@"[(int)(f*-8.0f)]:' ');
+			putchar(f<=0.0f?".:-=*%@GYL"[(int)(f*-9.0f)]:' ');
 		}
 		putchar('\n');
 	}
@@ -31,6 +31,7 @@ float f(float x, float y, float z){
 }
 
 float h(float x,float z){
+	//获取表面
 	for(float y=1.0f; y>=0.0f; y-=0.001f){
 		if(f(x,y,z)<=0.0f)
 			return y;
@@ -43,19 +44,31 @@ void heart2(){
 		for (float x = -1.5f; x < 1.5f; x += 0.025f) {
 			float v = f(x, 0.0f, z);
             if (v <= 0.0f) {
+				//Finite difference求法矢量
 				float y0 = h(x, z);
                 float ny = 0.01f;
 				float nx = h(x + ny, z) - y0;
 				float nz = h(x, z + ny) - y0;
 				float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
 				float d = (nx + ny - nz) * nd * 0.5f + 0.5f;
-				putchar(".:-=+*#%@"[(int)(d * 5.0f)]);		
+				//
+				putchar(".:*-=+#%@"[(int)(d * 6.3f)]);		
 			}
 			else
 				putchar(' ');
 		}
 		putchar('\n');
 	}
+}
+
+//3-3D版PPM
+void heart3(){
+	FILE* fp = fopen("heart.ppm", "w");
+	int sw = 512, sh = 512;
+	fprintf(fp, "P3\n%d %d\n255\n", sw, sh);
+	
+	
+	
 }
 
 
@@ -70,6 +83,8 @@ int main(){
 		heart1();break;
 	case 2:
 		heart2();break;
+	case 3:
+		heart3();break;
 	
 	default:
 		break;
