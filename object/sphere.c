@@ -1,8 +1,10 @@
 /** *********************
- * 画个球
- ************************/
+ *  画个圆/球
+ *  半径为1
+ ** **********************/
 #include <stdio.h>
-//0-基本版
+///0-基本版
+// 画个平面圆，内部填充统一符号
 void sphere0(){
 	for(float y=1.5f; y>-1.5f; y-=0.05f){
 		for(float x=-1.5f; x<1.5f; x+=0.025f){
@@ -13,7 +15,8 @@ void sphere0(){
 	}
 }
 
-//1-花纹版，等值线
+///1-等值线版
+// 画个平面圆，根据隐式方程的值填充不同符号
 void sphere1(){
 	for(float y=1.2f; y>-1.2f; y-=0.05f){
 		for(float x=-1.2f; x<1.2f; x+=0.025f){
@@ -25,7 +28,8 @@ void sphere1(){
 	}
 }
 
-//2-3D版
+///2-球体
+// 根据法线与光线夹角余弦值填充不同符号
 #include<math.h>
 float f(float x, float y, float z){
 	return x*x+y*y+z*z-1;
@@ -60,7 +64,8 @@ void sphere2(){
 	}
 }
 
-//3-3D版PPM图像
+///3-球体PPM图像输出
+// 
 void sphere3(){
 	FILE* fp = fopen("sphere.ppm", "w");
 	int width=512, height = 512;
@@ -82,46 +87,54 @@ void sphere3(){
 				fprintf(fp,"%d %d %d ",r,r,r);
 			}
 			else
-				fprintf(fp,"255,0,255 ");
+				fprintf(fp,"255,255,255 ");
 		}
 		fputc('\n',fp);
 	}
 	fclose(fp);
 }
 
-//4-3D版PPM-图像序列动画
+///4-改变光照方向，球体PPM图像序列输出
+//
 #include<string.h>
 void sphere4(){
-	const int frame_number = 3;
-	for(int index=0;index<frame_number;++index){
-		char* fileName ;
+	const int FRAME_NUMBER = 36;
+	for(int index=0;index<FRAME_NUMBER;++index){
+		//新建这一帧
+		char fileName[200] ;
 		sprintf(fileName,"sphere_%d.ppm",index);
 		FILE* fp = fopen(fileName,"w");
 		int width=512, height = 512;
 		fprintf(fp, "P3\n%d %d\n255\n", width, height);
 
+		//计算光照向量，从(-1,1,1)到(1,1,1)
+		float theta = 10.0*(index+1)*3.14/180;
+		float l_x = cos(theta);
+		float l_y = sin(theta);
+		
+		float l_z = 1; 
+		//float l_z = cos(theta);
+		
+		//绘制
 		for(int sy = 0; sy<height;sy++){
 			float z = 1.5f - sy * 3.0f / height;
 			for(int sx = 0;sx <width; sx++){
-				float x =sx *3.0f /width-1.5f;
-				float v=f(x,0.0f,z);
-				int r = 0;
-				if (v <= 0.0f) {
-					//Finite difference求法矢量
-					float y0 = h(x, z);
-					float ny = 0.01f;
-					float nx = h(x + ny, z) - y0;
-					float nz = h(x, z + ny) - y0;
-					float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
-					//float d = (nx + ny - nz) /sqrtf(3)* nd * 0.5f + 0.5f;
-					float d = ((index*2/frame_number-1) * nx + ny - nz) /sqrtf(3)* nd * 0.5f + 0.5f;
-
-					r = (int)(d*200.0f);
-					//
-					fprintf(fp,"%d %d 0 ",r);
+				float x =sx *3.0f /width-1.5f;			
+				if (f(x,0.0f,z) <= 0.0f) {
+					//球面法向量公式d=[x,y,z]					
+					float y = h(x,z);
+					float cosA = (l_x*x+l_y*y+l_z*z)/sqrtf(x*x+y*y+z*z)/sqrtf(3);
+					float d = cosA * 0.5f + 0.5f;
+					
+					//d
+					int r = (int)(d*241.0f);	
+					int g = (int)(d*124.0f);	
+					int b = (int)(d*103.0f);				
+					 
+					fprintf(fp,"%d %d %d ",r,g,b);
 				}
 				else
-					fprintf(fp,"230,230,230 ");
+					fprintf(fp,"185 136 125 ");//
 			}
 			fputc('\n',fp);
 		}
@@ -132,7 +145,7 @@ void sphere4(){
 
 
 int main(){
-	int caseID = 3;
+	int caseID = 2;
 
 	switch(caseID){
 	case 0:
