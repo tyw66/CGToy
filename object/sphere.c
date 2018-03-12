@@ -1,8 +1,8 @@
 /** *********************
- * ç”»ä¸ªçƒ
+ * »­¸öÇò
  ************************/
 #include <stdio.h>
-//0-åŸºæœ¬ç‰ˆ
+//0-»ù±¾°æ
 void sphere0(){
 	for(float y=1.5f; y>-1.5f; y-=0.05f){
 		for(float x=-1.5f; x<1.5f; x+=0.025f){
@@ -13,7 +13,7 @@ void sphere0(){
 	}
 }
 
-//1-ç­‰å€¼çº¿èŠ±çº¹ç‰ˆ
+//1-»¨ÎÆ°æ£¬µÈÖµÏß
 void sphere1(){
 	for(float y=1.2f; y>-1.2f; y-=0.05f){
 		for(float x=-1.2f; x<1.2f; x+=0.025f){
@@ -25,14 +25,15 @@ void sphere1(){
 	}
 }
 
-//2-3Dç‰ˆ
+//2-3D°æ
 #include<math.h>
 float f(float x, float y, float z){
 	return x*x+y*y+z*z-1;
 }
 
 float h(float x,float z){
-	//è·å–è¡¨é¢(è§£æ–¹ç¨‹çš„è¿‡ç¨‹)
+	//»ñÈ¡±íÃæ(½â·½³ÌµÄ¹ı³Ì)
+	//Õâ¸öº¯ÊıËµÃ÷ YÖá ´¹Ö±Ö½ÃæÏòÍâ ÓÒÊÖ×ø±êÏµ
 	for(float y=1.0f; y>=0.0f; y-=0.001f){
 		if(f(x,y,z)<=0.0f)
 			return y;
@@ -43,17 +44,14 @@ float h(float x,float z){
 void sphere2(){
 	for (float z = 1.2f; z > -1.2f; z -= 0.05f){
 		for (float x = -1.2f; x < 1.2f; x += 0.025f) {
-			float v = f(x, 0.0f, z); 
-            if (v <= 0.0f) {
-				//Finite differenceæ±‚æ³•çŸ¢é‡
-				float y0 = h(x, z);
-                float ny = 0.01f;
-				float nx = h(x + ny, z) - y0;
-				float nz = h(x, z + ny) - y0;
-				float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
-				float d = (nx + ny - nz) * nd * 0.5f + 0.5f;
-				//
-				putchar(".-=#%@"[(int)(d * 4.0f)]);		
+            if (f(x, 0.0f, z) <= 0.0f) {
+				//ÇòÌå·¨ÏòÁ¿d=[x,y,z]
+				float y = h(x, z);
+				float cosA = (-x+y+z)/ sqrtf(x*x+y*y+z*z) / sqrtf(3);
+				//wrapped diffuseĞŞÕı£¬Ôö´óÖµ£¬Ê¹ÆäÖµÔÚ±³Ãæµ½ÕıÃæµÄ·¶Î§ÊÇ [0, 1]£¬¶ø²»ÊÇ[-1,1];
+				//±ÜÃâ·¨ÏòÁ¿Óë¹â¼Ğ½Ç´óÓÚ90¡ãÊ±²»ÏÔÊ¾µÄÇé¿ö£¬¸ºÖµµÄ»°¾Í¿´²»µ½ÁË...
+				float d = cosA*0.5f+0.5f;
+				putchar(".-+#%@"[(int)(d * 6.0f)]);//.-+#%@
 			}
 			else
 				putchar(' ');
@@ -62,38 +60,36 @@ void sphere2(){
 	}
 }
 
-//3-3Dç‰ˆPPM
+//3-3D°æPPMÍ¼Ïñ
 void sphere3(){
 	FILE* fp = fopen("sphere.ppm", "w");
 	int width=512, height = 512;
 	fprintf(fp, "P3\n%d %d\n255\n", width, height);
-	for(int sy = 0; sy<height;sy++){
-		float z = 1.5f - sy * 3.0f / height;
-		for(int sx = 0;sx <width; sx++){
-			float x =sx *3.0f /width-1.5f;
-			float v=f(x,0.0f,z);
-			int r = 0;
-			if (v <= 0.0f) {
-				//Finite differenceæ±‚æ³•çŸ¢é‡
-				float y0 = h(x, z);
-                float ny = 0.01f;
-				float nx = h(x + ny, z) - y0;
-				float nz = h(x, z + ny) - y0;
-				float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
-				float d = (nx + ny - nz) /sqrtf(3)* nd * 0.5f + 0.5f;
-				r = (int)(d*200.0f);
-				//	
-				fprintf(fp,"%d %d 0 ",r,r);
+
+	for(int sy = 0; sy < height; sy++){
+		float z = 1.5f - sy * 3.0f / height;//°´±ÈÀı´ÓÆÁÄ»ÏñËØ×ªµ½Ä£ĞÍ´óĞ¡µÄ³ß¶È
+		for(int sx = 0; sx <width; sx++){
+			float x =sx *3.0f /width-1.5f;//°´±ÈÀı´ÓÆÁÄ»ÏñËØ×ªµ½Ä£ĞÍ´óĞ¡µÄ³ß¶È
+
+			if (f(x,0.0f,z) <= 0.0f) {//ÊôÓÚÇòÌå
+                //ÇòÃæ·¨ÏòÁ¿¹«Ê½d=[x,y,z]
+                float y = h(x, z);
+                float cosA = (- x + y + z) / sqrtf(x*x+y*y+z*z) /sqrtf(3);//(¹âÏßÏòÁ¿£º[1,-1,-1])
+                float d = cosA*0.5f+0.5f;//wrapped diffuse´¦Àí
+                //float d = cosA+0.2f>1.0f?1.0f:cosA+0.2f;//¼ÓÈëÈ«¾Ö¹â´¦Àí
+
+                int r = (int)(d*255.0f);
+				fprintf(fp,"%d %d %d ",r,r,r);
 			}
 			else
-				fprintf(fp,"200,200,200 ");	
+				fprintf(fp,"255,0,255 ");
 		}
 		fputc('\n',fp);
-	}			
+	}
 	fclose(fp);
 }
 
-//4-3Dç‰ˆPPM-å›¾åƒåºåˆ—åŠ¨ç”»
+//4-3D°æPPM-Í¼ÏñĞòÁĞ¶¯»­
 #include<string.h>
 void sphere4(){
 	const int frame_number = 3;
@@ -111,7 +107,7 @@ void sphere4(){
 				float v=f(x,0.0f,z);
 				int r = 0;
 				if (v <= 0.0f) {
-					//Finite differenceæ±‚æ³•çŸ¢é‡
+					//Finite differenceÇó·¨Ê¸Á¿
 					float y0 = h(x, z);
 					float ny = 0.01f;
 					float nx = h(x + ny, z) - y0;
@@ -119,27 +115,25 @@ void sphere4(){
 					float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
 					//float d = (nx + ny - nz) /sqrtf(3)* nd * 0.5f + 0.5f;
 					float d = ((index*2/frame_number-1) * nx + ny - nz) /sqrtf(3)* nd * 0.5f + 0.5f;
-					
+
 					r = (int)(d*200.0f);
-					//	
+					//
 					fprintf(fp,"%d %d 0 ",r);
 				}
 				else
-					fprintf(fp,"230,230,230 ");	
+					fprintf(fp,"230,230,230 ");
 			}
 			fputc('\n',fp);
-		}			
+		}
 		fclose(fp);
 	}
 
 }
 
 
-
-//miloçš„å‘½ä»¤è¡Œç”»å›¾æ¡†æ¶
 int main(){
 	int caseID = 3;
-	
+
 	switch(caseID){
 	case 0:
 		sphere0();break;
@@ -151,10 +145,21 @@ int main(){
 		sphere3();break;
 	case 4:
 		sphere4();break;
-	
+
 	default:
 		break;
 	}
-	
+
 	return 0;
 }
+
+    ///Finite differenceÇó·¨Ê¸Á¿
+    /*
+    float y0 = h(x, z);
+    float ny = 0.01f;
+    float nx = h(x + ny, z) - y0;
+    float nz = h(x, z + ny) - y0;
+    float nd = 1.0f / sqrtf(nx * nx + ny * ny + nz * nz);
+    //(nx + ny - nz)* nd /sqrtf(3)±íÊ¾µ¥Î»³¤¶ÈµÄ¹âÏßÏòÁ¿Óëµ¥Î»³¤¶ÈµÄ·¨ÏòÁ¿ÇóÄÚ»ı
+    float d = (nx + ny - nz)* nd /sqrtf(3) ;//* 0.5f + 0.5f;
+    */
