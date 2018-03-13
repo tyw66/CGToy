@@ -143,10 +143,11 @@ void sphere4(){
 
 }
 
-
+#include<stdlib.h>
 int main(){
-	int caseID = 2;
-
+	int caseID = 0;
+	//system("cls");
+	
 	switch(caseID){
 	case 0:
 		sphere0();break;
