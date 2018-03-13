@@ -92,6 +92,7 @@ void sphere3(){
 		fputc('\n',fp);
 	}
 	fclose(fp);
+	printf("sphere.ppm has been generated.\n");
 }
 
 ///4-改变光照方向，球体PPM图像序列输出
@@ -139,13 +140,105 @@ void sphere4(){
 			fputc('\n',fp);
 		}
 		fclose(fp);
+		printf("frame_%d has been generated.\n",index);
 	}
 
 }
 
+///5 - ASCII 动画 - 心跳状动画 
+//
+#include <windows.h>
+#include <tchar.h>
+void sphere5(){
+	HANDLE o = GetStdHandle(STD_OUTPUT_HANDLE);
+    _TCHAR buffer[25][80] = { _T(' ') };
+    _TCHAR ramp[] = _T(".:-=+*#%@");
+	
+    for (float t = 0.0f;; t += 0.1f) {
+        int sy = 0;
+        float s = sinf(t);
+        float a = s * s * s * s * 0.2f;
+	
+		for (float z = 1.3f; z > -1.2f; z -= 0.1f){
+			_TCHAR* p = &buffer[sy++][0];
+			float tz = z * (1.2f - a);//？？？ 
+			
+			for (float x = -1.5f; x < 1.5f; x += 0.05f) {
+				float tx = x * (1.2f + a);//？？？ 
+				if (f(tx, 0.0f, tz) <= 0.0f) {
+					//球体法向量d=[x,y,z]
+					float ty = h(tx, tz);
+					float cosA = (-tx+ty+tz)/ sqrtf(tx*tx+ty*ty+tz*tz) / sqrtf(3);
+					float d = cosA*0.5f+0.5f;
+					*p++ = ramp[(int)(d * 5.0f)];
+					//putchar(".-+#%@"[(int)(d * 6.0f)]);//.-+#%@
+				}
+				else
+					*p++ = ' ';
+					//putchar(' ');
+			}
+			//putchar('\n');
+		}
+		 for (sy = 0; sy < 25; sy++) {
+			 COORD coord = { 0, sy };
+			 SetConsoleCursorPosition(o, coord);
+			 WriteConsole(o, buffer[sy], 79, NULL, 0);
+		 }
+		 Sleep(33);
+	}
+
+}
+
+///6 - ASCII 动画 - 光照角度变化 
+//
+void sphere6(){
+	HANDLE o = GetStdHandle(STD_OUTPUT_HANDLE);
+    _TCHAR buffer[60][100] = { _T(' ') };
+    _TCHAR ramp[] = _T(".-+#%@");
+   	
+
+	int index = 0;
+    for (float t = 0.0f;; t += 0.1f) {
+        int sy = 0;
+       	//计算光照向量，从(-1,1,1)到(1,1,1)       	
+        float theta = 10.0*(index+1);
+  		float tx = cosf(theta*3.14/180);
+		float ty = sinf(theta*3.14/180);
+		float tz = 1;
+		//float tz = cosf(theta*3.14/180);
+			
+		for (float z = 1.2f; z > -1.2f; z -= 0.05f){	
+			_TCHAR* p = &buffer[sy++][0];
+			for (float x = -1.2f; x < 1.2f; x += 0.025f) {
+				if (f(x, 0.0f, z) <= 0.0f) {
+					//球体法向量d=[x,y,z]
+					float y = h(x, z);
+					float cosA = (tx*x+ty*y+tz*z)/ sqrtf(x*x+y*y+z*z) / sqrtf(tx*tx+ty*ty+tz*tz);
+					float d = cosA*0.5f+0.5f;
+					*p++ = ramp[(int)(d * 6.0f)];					
+				}
+				else
+					*p++ = ' ';
+			}
+		}
+		 for (sy = 0; sy < 60; sy++) {
+			 COORD coord = { 0, sy };
+			 SetConsoleCursorPosition(o, coord);
+			 WriteConsole(o, buffer[sy], 99, NULL, 0);
+		 }
+		 //
+		 index++;
+		 if(index>35)index=0;
+		 printf("DEBUG:theta=%f",theta);
+		 Sleep(33);
+	}
+
+}
+
+
 #include<stdlib.h>
 int main(){
-	int caseID = 0;
+	int caseID = 6;
 	//system("cls");
 	
 	switch(caseID){
@@ -159,7 +252,10 @@ int main(){
 		sphere3();break;
 	case 4:
 		sphere4();break;
-
+	case 5:
+		sphere5();break;
+	case 6:
+		sphere6();break;
 	default:
 		break;
 	}
