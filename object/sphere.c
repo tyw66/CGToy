@@ -224,7 +224,7 @@ void sphere6(){
 		 for (sy = 0; sy < 60; sy++) {
 			 COORD coord = { 0, sy };
 			 SetConsoleCursorPosition(o, coord);
-			 WriteConsole(o, buffer[sy], 99, NULL, 0);
+			 WriteConsole(o, buffer[sy], 100, NULL, 0);
 		 }
 		 //
 		 index++;
