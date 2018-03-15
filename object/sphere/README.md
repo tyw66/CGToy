@@ -7,7 +7,7 @@
 ## 食用说明
 - 更改main()中的caseID数值（目前为0-6），可以得到不同效果。
 
-- 确保安装了c编译器，如gcc，简单调用 `gcc -o sphere sphere.c` 即可编译，然后执行./sphere.exe。
+- 确保安装了c编译器，如gcc，简单调用 `gcc -o sphere sphere.c` 即可编译，然后执行`./sphere.exe`。
 
 - case5和case6调用了windows的API，需要windows环境下。
 
