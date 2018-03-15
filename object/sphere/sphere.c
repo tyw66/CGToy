@@ -6,8 +6,8 @@
 ///0-基本版
 // 画个平面圆，内部填充统一符号
 void sphere0(){
-	for(float y=1.5f; y>-1.5f; y-=0.05f){
-		for(float x=-1.5f; x<1.5f; x+=0.025f){
+	for(float y=1.2f; y>-1.2f; y-=0.05f){
+		for(float x=-1.2f; x<1.2f; x+=0.025f){
 			float f=x*x+y*y-1;
 			putchar(f<=0.0f?'@':' ');
 		}
@@ -238,7 +238,7 @@ void sphere6(){
 
 #include<stdlib.h>
 int main(){
-	int caseID = 6;
+	int caseID = 6; //See different effect by change the number.
 	//system("cls");
 	
 	switch(caseID){
