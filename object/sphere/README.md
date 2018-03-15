@@ -1,15 +1,15 @@
 #  画个球
 ## 简介
-在知乎上看了[用C语言绘制心形](https://www.zhihu.com/question/20187195/answer/34873279)，理解了思路，我自己也试着做一个球体版的。
+在知乎上看了[用C语言绘制心形](https://www.zhihu.com/question/20187195/answer/34873279)，理解了思路，我自己也试着做一个球体版的。(球体的法线很直观，不用像心形那样用有限差分法，因此要简单些。)
 
-程序根据圆形和球体的方程，画个球输出到控制台；输出到ppm图像文件；输出球体光照角度变化时的动画。
+程序根据圆形和球体的方程，画个球输出到控制台；输出到ppm图像文件；输出球体光照角度变化时的动画等。
 
 ## 食用说明
 - 更改main()中的caseID数值（目前为0-6），可以得到不同效果。
 
-- 确保安装了c编译器，如gcc，简单调用 `gcc -o sphere sphere.c` 即可编译。
+- 确保安装了c编译器，如gcc，简单调用 `gcc -o sphere sphere.c` 即可编译，然后执行./sphere.exe。
 
-- case5和case6需要在windows环境下。
+- case5和case6调用了windows的API，需要windows环境下。
 
 ## 效果
 - 控制台绘制，输出一个圆形，内部填充统一符号
@@ -43,7 +43,9 @@
 
 
 # 附
-ppm图像格式：https://zh.wikipedia.org/zh-hk/PBM%E6%A0%BC%E5%BC%8F
+ppm图像格式确实挺方便的，没有经过压缩，很直观，能够直接控制到某一个像素的RGB值，适合用作图形学这种练习项目。
+wiki：https://zh.wikipedia.org/zh-hk/PBM%E6%A0%BC%E5%BC%8F
 
 
+--update on 2018/3/15 
 
