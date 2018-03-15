@@ -7,4 +7,4 @@
 
 ## 已完成
 
-- [画个圆球](.\object\sphere)
+- [画个圆球](./object/sphere)
