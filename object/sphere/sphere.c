@@ -236,9 +236,51 @@ void sphere6(){
 }
 
 
+///7-球体PPM图像输出-加入高光 
+//
+void sphere7(){
+	FILE* fp = fopen("sphere_light.ppm", "w");
+	int width=512, height = 512;
+	fprintf(fp, "P3\n%d %d\n255\n", width, height);
+
+	for(int sy = 0; sy < height; sy++){
+		float z = 1.5f - sy * 3.0f / height;//按比例从屏幕像素转到模型大小的尺度
+		for(int sx = 0; sx <width; sx++){
+			float x =sx *3.0f /width-1.5f;//按比例从屏幕像素转到模型大小的尺度
+
+			if (f(x,0.0f,z) <= 0.0f) {//属于球体
+                //球面法向量公式d=[x,y,z]
+                float y = h(x, z);
+                float cosA = (- x + y + z) / sqrtf(x*x+y*y+z*z) /sqrtf(3);//(光线向量：[1,-1,-1])
+                float diffuse = cosA*0.5f+0.5f;//wrapped diffuse处理
+                //float d = cosA+0.2f>1.0f?1.0f:cosA+0.2f;//加入全局光处理
+
+				//高光分量 
+				float specular = pow(cosA,64.0);
+				
+                int r = (int)(diffuse * 255.0f + specular * 200.0f);
+                int g = (int) (specular * 200.0f);
+                int b = (int) (specular * 200.0f);
+                r=r>255?255:r;
+                g=g>255?255:g;
+                b=b>255?255:b;
+				fprintf(fp,"%d %d %d ",r,g,b);
+			}
+			else
+				fprintf(fp,"255,255,255 ");
+		}
+		fputc('\n',fp);
+	}
+	fclose(fp);
+	printf("sphere.ppm has been generated.\n");
+}
+
+
+
+
 #include<stdlib.h>
 int main(){
-	int caseID = 6; //See different effect by change the number.
+	int caseID = 7; //See different effect by change the number.
 	//system("cls");
 	
 	switch(caseID){
@@ -256,6 +298,8 @@ int main(){
 		sphere5();break;
 	case 6:
 		sphere6();break;
+	case 7:
+		sphere7();break;
 	default:
 		break;
 	}
