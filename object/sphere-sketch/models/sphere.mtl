@@ -1,0 +1,16 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# 创建的文件:19.03.2018 14:01:01
+
+newmtl 01___Default
+	Ns 40.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7451 0.7451 0.7451
+	Kd 0.7451 0.7451 0.7451
+	Ks 1.0800 1.0800 1.0800
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Code Project\CGToy\object\sphere-sketch\textures\sphere_baked.png
+	map_Kd D:\Code Project\CGToy\object\sphere-sketch\textures\sphere_baked.png
