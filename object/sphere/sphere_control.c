@@ -1,13 +1,13 @@
-/** *********************
- *  画个圆/球
+/** ****************************************** 
+ *  画个圆/球 - 带控制台交互的 
  *  半径为1
- *  键盘上下左右控制光源方向
- ** **********************/
- /********************************
- *未做完~！！
+ *  键盘上下左右控制球的位置，wasd控制光源方向
+ * 
+ *  挖了坑，尚未做完~~！！
  *********************************/
 #include <stdio.h>
-
+#include"windows.h"
+#include <tchar.h>
 // 根据法线与光线夹角余弦值填充不同符号
 #include<math.h>
 static float l_x;
@@ -28,29 +28,51 @@ float h(float x,float z){
 	return 0.0f;
 }
 
-#include<stdlib.h>
-void sphere_control(){
-	//system("cls");
-	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-	for (float z = 1.2f; z > -1.2f; z -= 0.05f){
-		for (float x = -1.2f; x < 1.2f; x += 0.025f) {
-            if (f(x, 0.0f, z) <= 0.0f) {
-				//球体法向量d=[x,y,z]
-				float y = h(x, z);
-				float cosA = (x*l_x+y*l_y+z*l_z)/ sqrtf(x*x+y*y+z*z) / sqrtf(3);
-				//wrapped diffuse修正，增大值，使其值在背面到正面的范围是 [0, 1]，而不是[-1,1];
-				//避免法向量与光夹角大于90°时不显示的情况，负值的话就看不到了...
-				float d = cosA*0.5f+0.5f;
-				putchar(".-+#%@"[(int)(d * 6.0f)]);//.-+#%@
-			}
-			else
-				putchar(' ');
-		}
-		putchar('\n');
-	}
-	printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-}
 
+void sphere_control(){
+	system("cls");
+	HANDLE o = GetStdHandle(STD_OUTPUT_HANDLE);
+    _TCHAR buffer[60][100] = { _T(' ') };
+    _TCHAR ramp[] = _T(".-+#%@");
+   	
+
+	int index = 0;
+    for (float t = 0.0f;; t += 0.1f) {
+        int sy = 0;
+       	//计算光照向量，从(-1,1,1)到(1,1,1)       	
+        float theta = 10.0*(index+1);
+  		float tx = cosf(theta*3.14/180);
+		float ty = sinf(theta*3.14/180);
+		float tz = 1;
+		//float tz = cosf(theta*3.14/180);
+			
+		for (float z = 1.2f; z > -1.2f; z -= 0.05f){	
+			_TCHAR* p = &buffer[sy++][0];
+			for (float x = -1.2f; x < 1.2f; x += 0.025f) {
+				if (f(x, 0.0f, z) <= 0.0f) {
+					//球体法向量d=[x,y,z]
+					float y = h(x, z);
+					float cosA = (tx*x+ty*y+tz*z)/ sqrtf(x*x+y*y+z*z) / sqrtf(tx*tx+ty*ty+tz*tz);
+					float d = cosA*0.5f+0.5f;
+					*p++ = ramp[(int)(d * 6.0f)];					
+				}
+				else
+					*p++ = ' ';
+			}
+		}
+		 for (sy = 0; sy < 60; sy++) {
+			 COORD coord = { 0, sy };
+			 SetConsoleCursorPosition(o, coord);
+			 WriteConsole(o, buffer[sy], 100, NULL, 0);
+		 }
+		 //
+		 index++;
+		 if(index>35)index=0;
+		 printf("DEBUG:theta=%f",theta);
+		// Sleep(33);
+	}
+}
+/*
 int main(){
 	
 	int theta = 225;
@@ -94,5 +116,54 @@ int main(){
 
 
 	return 0;
+}*/
+
+
+BOOL WINAPI ConsoleHandler(DWORD CEvent)
+{
+char mesg[128];
+
+switch(CEvent)
+{
+case KEY_EVENT :
+	//if()
+break;
+/*
+case CTRL_C_EVENT:
+MessageBox(NULL,
+"CTRL+C received!","CEvent",MB_OK);
+break;
+case CTRL_BREAK_EVENT:
+MessageBox(NULL,
+"CTRL+BREAK received!","CEvent",MB_OK);
+break;
+case CTRL_CLOSE_EVENT:
+MessageBox(NULL,
+"Program being closed!","CEvent",MB_OK);
+break;
+case CTRL_LOGOFF_EVENT:
+MessageBox(NULL,
+"User is logging off!","CEvent",MB_OK);
+break;
+case CTRL_SHUTDOWN_EVENT:
+MessageBox(NULL,
+"User is logging off!","CEvent",MB_OK);
+break;
+*/
+}
+return TRUE;
 }
 
+int main(){
+	if (SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler,TRUE)==FALSE)
+	{
+		// unable to install handler... 
+		// display message to the user
+		printf("Unable to install handler!\n");
+		return -1;
+	} 
+	while(1){
+		sphere_control();
+		
+	}
+}
