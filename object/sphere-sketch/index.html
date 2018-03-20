@@ -6,20 +6,28 @@
     <meta name="viewport" content="width=device-width">
     <title>Sphere with Sketch-style rendering</title>
     <style type="text/css" media="screen">
-    #container {
-      margin: 0 auto;
-      width: 640px;
-      height: 720px;
-    }
+		body {
+		font-family: Monospace;
+		background-color: #000;
+		color: #fff;
+		margin: 0px;
+		overflow: hidden;
+		}
+		
+		#container {
+		  margin: 0 auto;
+		  width: 1080px;
+		  height: 720px;
+		}
     </style>
   </head>
   
   <body onload="pageStart();">
 	  <div id="container"></div>
 	  
+	  <script type="text/javascript" src="./bundle.js"></script>
 	  <script type="text/javascript" src="./three.min.js"></script>
 	  <script type="text/javascript" src="./OBJLoader.js"></script>	  
-	  <script type="text/javascript" src="./bundle.js"></script>
   </body>
   
 </html>
