@@ -11,36 +11,14 @@ var windowHalfY = window.innerHeight / 2;
 init();
 animate();
 
-
-function init() {
-	
-	// setup scene
-	scene = new THREE.Scene();
-
-	// setup light
-	var ambientLight = new THREE.AmbientLight( 0xffffff, 1.0 );//颜色 强度
-	scene.add( ambientLight );
-	//var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
-	//scene.add( pointLight );
-	
-	// setup camera
-	camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
-	camera.position.x = 0;
-	camera.position.y = 0;
-	camera.position.z = 250;	
-	//camera.lookAt(scene.position);
-	scene.add( camera );
-	
+function mk_model(objName,textureName,x,y,z){
 	// load texture
 	var manager = new THREE.LoadingManager();
-	manager.onProgress = function ( item, loaded, total ) {
-
+		manager.onProgress = function ( item, loaded, total ) {
 		console.log( item, loaded, total );
-
 	};
-
 	var textureLoader = new THREE.TextureLoader( manager );
-	var texture = textureLoader.load( 'texture/sphere_baked.png' );
+	var texture = textureLoader.load( textureName );
 
 	// load model
 	var onProgress = function ( xhr ) {
@@ -49,30 +27,43 @@ function init() {
 			console.log( Math.round(percentComplete, 2) + '% downloaded' );
 		}
 	};
-
 	var onError = function ( xhr ) {
 	};
 
 	var loader = new THREE.OBJLoader( manager );
-	loader.load( 'models/sphere.obj', function ( object ) {
-
+	var object;
+	loader.load( objName, function ( object ) {
 		object.traverse( function ( child ) {
-
 			if ( child instanceof THREE.Mesh ) {
-
 				child.material.map = texture;
-
 			}
-
 		} );
-
-		object.position.y = - 30;//设置模型再场景中的位置
-		scene.add( object );
-
+		//设置模型在场景中的位置
+		object.position.x = x;
+		object.position.y = y;
+		object.position.z = z;	
+		scene.add(object);
 	}, onProgress, onError );
 
+}
 
+function init() {	
+	// setup scene
+	scene = new THREE.Scene();
+
+	// setup light
+	var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1.0 );//颜色 强度
+	scene.add( ambientLight );
 	
+	// setup camera
+	camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
+	camera.position.x = 0;
+	camera.position.y = 0;
+	camera.position.z = 250;	
+	scene.add( camera );
+
+	// load model
+	mk_model('models/sphere.obj','texture/sphere_baked.png',0,-30,0);
 	
 	//setup renderer
 	renderer = new THREE.WebGLRenderer();
@@ -80,53 +71,39 @@ function init() {
 	renderer.setSize( window.innerWidth, window.innerHeight );	
 	renderer.setClearColor(0xEEEEEE, 1.0);
 		
+	//layout	
 	container = document.createElement( 'div' );
 	container.appendChild( renderer.domElement );
-	document.body.appendChild( container );
-	
+	document.body.appendChild( container );	
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-	//
-
 	window.addEventListener( 'resize', onWindowResize, false );
 
 }
 
 function onWindowResize() {
-
 	windowHalfX = window.innerWidth / 2;
 	windowHalfY = window.innerHeight / 2;
-
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-
 	renderer.setSize( window.innerWidth, window.innerHeight );
-
 }
 
 function onDocumentMouseMove( event ) {
-
 	mouseX = ( event.clientX - windowHalfX ) ;
 	mouseY = ( event.clientY - windowHalfY ) ;
-
 }
 
-//
-
 function animate() {
-
 	requestAnimationFrame( animate );
 	render();
-
 }
 
 function render() {
-
 	camera.position.x += ( mouseX - camera.position.x );
 	camera.position.y += ( - mouseY - camera.position.y ) ;
-
 	camera.lookAt( scene.position );
-
 	renderer.render( scene, camera );
-
 }
+
+
+
