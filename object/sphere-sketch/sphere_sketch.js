@@ -21,6 +21,11 @@ function mk_model(objName,textureName,x,y,z){
 	var texture = textureLoader.load( textureName );
 
 	// load model
+	var loader = new THREE.OBJLoader( manager );
+	var object;
+	loader.load( objName, afterLoad, onProgress, onError );
+	
+	
 	var onProgress = function ( xhr ) {
 		if ( xhr.lengthComputable ) {
 			var percentComplete = xhr.loaded / xhr.total * 100;
@@ -30,9 +35,8 @@ function mk_model(objName,textureName,x,y,z){
 	var onError = function ( xhr ) {
 	};
 
-	var loader = new THREE.OBJLoader( manager );
-	var object;
-	loader.load( objName, function ( object ) {
+
+	function afterLoad( object ) {
 		object.traverse( function ( child ) {
 			if ( child instanceof THREE.Mesh ) {
 				child.material.map = texture;
@@ -43,7 +47,8 @@ function mk_model(objName,textureName,x,y,z){
 		object.position.y = y;
 		object.position.z = z;	
 		scene.add(object);
-	}, onProgress, onError );
+	}
+	
 
 }
 
