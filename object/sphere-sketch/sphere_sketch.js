@@ -18,8 +18,26 @@ function mk_model(objName,textureName,x,y,z){
 		console.log( item, loaded, total );
 	};
 	var textureLoader = new THREE.TextureLoader( manager );
-	var texture = textureLoader.load( textureName );
+	var mytexture = textureLoader.load( textureName );
 
+	//set shader
+	var vShader = 'void main(){gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);}';
+	
+	var fShader = 'void main(){gl_FragColor = vec4(0.0, 0.8, 1.0, 1.0);}';
+	var shaderMaterial =
+	  new THREE.ShaderMaterial({
+		uniforms:{
+			tex: {type:"t",value: mytexture},
+		},
+		attributes:{
+			
+		},
+		vertexShader:   vShader,
+		fragmentShader: fShader
+	  }); 
+	
+	
+	
 	// load model
 	var onProgress = function ( xhr ) {
 		if ( xhr.lengthComputable ) {
@@ -35,7 +53,9 @@ function mk_model(objName,textureName,x,y,z){
 	loader.load( objName, function ( object ) {
 		object.traverse( function ( child ) {
 			if ( child instanceof THREE.Mesh ) {
-				child.material.map = texture;
+				shaderMaterial.map = texture;
+				child.material = shaderMaterial;
+				//child.material.map = texture;
 			}
 		} );
 		//设置模型在场景中的位置
