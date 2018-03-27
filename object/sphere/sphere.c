@@ -3,6 +3,10 @@
  *  半径为1
  ** **********************/
 #include <stdio.h>
+
+//~~~~~~~~~公用定义~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
 ///0-基本版
 // 画个平面圆，内部填充统一符号
 void sphere0(){
@@ -251,22 +255,18 @@ void sphere7(){
 			if (f(x,0.0f,z) <= 0.0f) {//属于球体
                 //球面法向量公式d=[x,y,z]
                 float y = h(x, z);
-                float cosA = (- x + y + z) / sqrtf(x*x+y*y+z*z) /sqrtf(3);//(光线向量：[1,-1,-1])
+                float cosA = (- x + y + z) / sqrtf(x*x+y*y+z*z) /sqrtf(3);//(光线向量：[-1,1,1])
 				
-				//漫反射分量，wrapped diffuse处理
+				//漫反射，wrapped diffuse处理
                 float diffuse = cosA*0.5f+0.5f;
                 //float d = cosA+0.2f>1.0f?1.0f:cosA+0.2f;//加入全局光处理
-
-				//高光分量 
+                
+				//高光分
 				float specular = pow(cosA,64.0);
-				
-				//边缘分量todo
-				float cosB = z / sqrtf(x*x+y*y+z*z) /sqrtf(3);//(光线向量：[0,0,1])
-				float edge =  pow(cosB,4.0);
-				
-                int r = (int)(diffuse * 255.0f + specular * 200.0f + edge *100.0f);
-                int g = (int) (specular * 200.0f + edge *100.0f);
-                int b = (int) (specular * 200.0f + edge *100.0f);
+	
+ 				int r = (int)(diffuse * 255.0f + specular * 200.0f);
+                int g = (int) (specular * 200.0f );
+                int b = (int) (specular * 200.0f );
                 r=r>255?255:r;
                 g=g>255?255:g;
                 b=b>255?255:b;
