@@ -45,16 +45,23 @@
 
 -![ ](case7.png)  
 
+## 一些效果
+- 卡通渲染
+-![ ](casePlus_cartoon.png)  
+
+
 ## 更详细的介绍
 请参见知乎：[链接](https://zhuanlan.zhihu.com/p/34525494)
 
 
 ## 附
-ppm图像格式确实挺方便的，没有经过压缩，很直观，能够直接控制到某一个像素的RGB值，适合用作图形学这种练习项目。
-wiki：[链接](https://zh.wikipedia.org/zh-hk/PBM%E6%A0%BC%E5%BC%8F)
+[ppm图像格式](https://zh.wikipedia.org/zh-hk/PBM%E6%A0%BC%E5%BC%8F)确实挺方便的，没有经过压缩，很直观，能够直接控制到某一个像素的RGB值，适合用作图形学这种练习项目。
+
+
+
 
 
 --created on 2018/3/14 
 
---updated on 2018/3/18 
+--updated on 2018/3/28 
 
