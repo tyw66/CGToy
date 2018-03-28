@@ -1,4 +1,3 @@
-#include "stdio.h"
 #include "math.h"
 struct Color3{
 	int r, g, b;
@@ -35,4 +34,11 @@ struct Vec3{
 double dot(const Vec3& lhs, const Vec3& rhs){
 	return lhs.x*rhs.x+lhs.y*rhs.y+lhs.z*rhs.z;
 }
+
 //œÚ¡ø≤Ê≥À	
+
+
+
+typedef struct Color3 Color;
+typedef struct Vec3 Pos;
+typedef struct Vec3 Vec;
