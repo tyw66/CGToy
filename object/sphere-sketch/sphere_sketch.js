@@ -1,3 +1,4 @@
+
 var container;
 
 var camera, scene, renderer;
@@ -29,17 +30,29 @@ function mk_model(objName,textureName,x,y,z){
 	var onProgress = function ( xhr ) {
 		if ( xhr.lengthComputable ) {
 			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
 		}
 	};
 	var onError = function ( xhr ) {
 	};
 
-
+	
+	//shader
+	var uniforms;
+	var shaderMaterial =  new THREE.ShaderMaterial({
+		uniforms: uniforms,
+		vertexShader:$('#vertexshader');
+		fragmentShader: $('#vertexshader');
+		//document.getElementById('fShaderCode').textContent
+	}); 
+	
+	
+	
 	function afterLoad( object ) {
 		object.traverse( function ( child ) {
 			if ( child instanceof THREE.Mesh ) {
-				child.material.map = texture;
+				//child.material.map = texture;
+				child.material = shaderMaterial;//设置shader
 			}
 		} );
 		//设置模型在场景中的位置

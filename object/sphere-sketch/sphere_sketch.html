@@ -26,16 +26,42 @@
 				font-weight: bold; text-decoration: underline; cursor: pointer 
 			}
 		</style>
+		
+		<script src="./ThreeJS/three.min.js"></script>
+		<script src="./ThreeJS/OBJLoader.js"></script>
+		<script src="./ThreeJS/ShaderMaterial.js"></script>
+		<script src="./ThreeJS/zepto.js"></script>
+		
+		<script src="./sphere_sketch.js"></script>
+		
+		<script id="vShaderCode" type="x-shader/x-vertex">
+			// 创建一个varying变量vNormal，顶点着色器和片元着色器都包含了该变量
+			varying vec3 vNormal;
+			void main() {
+			  // 将vNormal设置为normal，后者是Three.js创建并传递给着色器的attribute变量
+			  vNormal = normal;
+			  gl_Position = projectionMatrix *modelViewMatrix *vec4(position, 1.0);
+			} 
+		</script>
+
+		<script id="fShaderCode" type="x-shader/x-fragment">
+			void main(void) {
+			  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+			}
+		</script>
+
+		
+		
+		
+		
+		
 	</head>
 
 	<body>
 		<div id="info">
-		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - sphere
+		<a href="http://threejs.org" target="_blank">three.js</a> - sphere
 		</div>
 
-		<script src="./ThreeJS/three.min.js"></script>
-		<script src="./ThreeJS/OBJLoader.js"></script>
-		<script src="./sphere_sketch.js"></script>
 
 	</body>
 </html>
