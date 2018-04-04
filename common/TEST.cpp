@@ -4,7 +4,7 @@
 
 //½á¹¹Ìå - ²âÊÔ 
 int main(){
-
+	/*
 	Color red = {255,0,0};
 	Color green(0,255,0); 
 	Color blue = {0,0,255};
@@ -21,14 +21,14 @@ int main(){
 	
 	Color gray_light2 (gray_light);
 	printf("gray_light2-> r:%d,g:%d,b:%d\n\n",gray_light2.r,gray_light2.g,gray_light2.b);
-	
-	/*
+	*/
+		
+
 	Vec v1(4,1,1);
 	Vec v2(3,2,3);
 	Vec v= v1-v2;
  	printf("x:%f,y:%f,z:%f\n",v.x,v.y,v.z);
 
-	printf("dot:%f",dot(v1,v2));
-	*/
-	
+	printf("dot:%f",vec3dot(v1,v2));
+
 }
