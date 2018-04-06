@@ -25,20 +25,164 @@
 				color: #f00;
 				font-weight: bold; text-decoration: underline; cursor: pointer 
 			}
-		</style>
+		</style>		
+		
 	</head>
 
 	<body>
 		<div id="info">
-		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - sphere
+		<a href="http://threejs.org" target="_blank">three.js</a> - sphere
 		</div>
 
 		<script src="./ThreeJS/three.min.js"></script>
 		<script src="./ThreeJS/OBJLoader.js"></script>
-		<script src="./ThreeJS/ShaderMaterial.js" type = "module"></script>
+		<script src="./ThreeJS/ShaderMaterial.js" type = "module"></script>	
+		<!-- <script src="./sphere_sketch.js"></script> -->
 		
-		<script src="./sphere_sketch.js"></script>
+		<script id="vShaderCode" type="x-shader/x-vertex">
+			// 创建一个varying变量vNormal，顶点着色器和片元着色器都包含了该变量
+			varying vec3 vNormal;
+			void main() {
+			  // 将vNormal设置为normal，后者是Three.js创建并传递给着色器的attribute变量
+			  vNormal = normal;
+			  gl_Position = projectionMatrix *modelViewMatrix *vec4(position, 1.0);
+			} 
+		</script>
+
+		<script id="fShaderCode" type="x-shader/x-fragment">
+			void main(void) {
+			  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+			}
+		</script>	
+		
+		
+		<script>
+			var container;
+			var camera, scene, renderer;
+			var mouseX = 0, mouseY = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			animate();
+
+			function mk_model(objName,textureName,x,y,z){
+				// load texture
+				var manager = new THREE.LoadingManager();
+					manager.onProgress = function ( item, loaded, total ) {
+					console.log( item, loaded, total );
+				};
+				var textureLoader = new THREE.TextureLoader( manager );
+				var mytexture = textureLoader.load( textureName );
+
+				
+				//set shader
+				var uniforms ={
+					tex: {type:"t",value: mytexture},
+				};
+				var attributes = {
+						
+				};
+				var shaderMaterial =  new THREE.ShaderMaterial({
+					uniforms: uniforms,
+					vertexShader:document.getElementById('vShaderCode').textContent,
+					fragmentShader:document.getElementById('fShaderCode').textContent
+				}); 
+				
+				
+				
+				// load model
+				var loader = new THREE.OBJLoader( manager );
+				loader.load( objName, afterLoad, onProgress, onError );
+							
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+					}
+				};
+				var onError = function ( xhr ) {
+				};
+		
+				var object;
+				function afterLoad( object ) {
+					object.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {	
+							child.material = shaderMaterial;//设置shader		
+						}
+					} );
+					//设置模型在场景中的位置
+					object.position.x = x;
+					object.position.y = y;
+					object.position.z = z;	
+					scene.add(object);
+				}
+				
+
+			}
+
+			function init() {	
+				// setup scene
+				scene = new THREE.Scene();
+
+				// setup light
+				var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1.0 );//颜色 强度
+				scene.add( ambientLight );
+				
+				// setup camera
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.x = 0;
+				camera.position.y = 0;
+				camera.position.z = 250;	
+				scene.add( camera );
+
+				// load model
+				mk_model('models/sphere.obj','texture/sphere_baked.png',0,-30,0);
+				
+				//setup renderer
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );	
+				renderer.setClearColor(0xEEEEEE, 1.0);
+					
+				//layout	
+				container = document.createElement( 'div' );
+				container.appendChild( renderer.domElement );
+				document.body.appendChild( container );	
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function onDocumentMouseMove( event ) {
+				mouseX = ( event.clientX - windowHalfX ) ;
+				mouseY = ( event.clientY - windowHalfY ) ;
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				render();
+			}
+
+			function render() {
+				camera.position.x += ( mouseX - camera.position.x );
+				camera.position.y += ( - mouseY - camera.position.y ) ;
+				camera.lookAt( scene.position );
+				renderer.render( scene, camera );
+			}		
 			
+			
+		</script>
+			
+		
 
 	</body>
 </html>
