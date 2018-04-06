@@ -40,25 +40,27 @@
 		<!-- <script src="./sphere_sketch.js"></script> -->
 		
 		<script id="vShaderCode" type="x-shader/x-vertex">
-			// 创建一个varying变量vNormal，顶点着色器和片元着色器都包含了该变量
-			varying vec3 vNormal;
-			void main() {
-			  // 将vNormal设置为normal，后者是Three.js创建并传递给着色器的attribute变量
-			  vNormal = normal;
-			  gl_Position = projectionMatrix *modelViewMatrix *vec4(position, 1.0);
-			} 
+			varying vec2 vUv;
+			void main(void) {
+			  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			  vUv = uv;
+			}
 		</script>
 
 		<script id="fShaderCode" type="x-shader/x-fragment">
+			uniform sampler2D aTexture;
+			varying vec2 vUv;
+
 			void main(void) {
-			  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-			}
+			  gl_FragColor = texture2D(aTexture, vUv);
+			}	
+
 		</script>	
 		
 		
 		<script>
 			var container;
-			var camera, scene, renderer;
+			var keyLight,camera, scene, renderer;
 			var mouseX = 0, mouseY = 0;
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
@@ -76,15 +78,16 @@
 				var mytexture = textureLoader.load( textureName );
 
 				
-				//set shader
-				var uniforms ={
-					tex: {type:"t",value: mytexture},
+				//set shader@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				var uniforms = {
+					aTexture:{type:'sampler2D', value: mytexture }
 				};
 				var attributes = {
-						
+					vertexOpacity: { type: 'f', value: [] }
 				};
 				var shaderMaterial =  new THREE.ShaderMaterial({
-					uniforms: uniforms,
+					uniforms:uniforms,
+					attributes:attributes,
 					vertexShader:document.getElementById('vShaderCode').textContent,
 					fragmentShader:document.getElementById('fShaderCode').textContent
 				}); 
@@ -128,6 +131,10 @@
 				// setup light
 				var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1.0 );//颜色 强度
 				scene.add( ambientLight );
+				keyLight = new THREE.SpotLight(0xffffff, 1, 5000, Math.PI / 6, 25);
+                keyLight.position.set(-100, 100, 100);
+                keyLight.target.position.set(0, 0, 0);
+                scene.add(keyLight);
 				
 				// setup camera
 				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
@@ -138,6 +145,7 @@
 
 				// load model
 				mk_model('models/sphere.obj','texture/sphere_baked.png',0,-30,0);
+				//mk_model('models/lego.obj','texture/lego.png',0,0,0);
 				
 				//setup renderer
 				renderer = new THREE.WebGLRenderer();
