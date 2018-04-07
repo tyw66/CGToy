@@ -51,9 +51,17 @@
 			uniform sampler2D aTexture;
 			varying vec2 vUv;
 
-			void main(void) {
-			  gl_FragColor = texture2D(aTexture, vUv);
-			}	
+			//void main(void) {
+			//  gl_FragColor = texture2D(aTexture, vUv);
+			//}	
+			
+			void main() {
+			  vec2 uv = vUv * 15.0;
+			  vec2 uv2 = vUv.yx * 10.0;
+			  float shading = texture2D(aTexture, vUv).r + 0.1;
+			  float crossedShading = shade(shading, uv) * shade(shading, uv2) * 0.6 + 0.4;
+			  gl_FragColor = vec4(vec3(crossedShading), 1.0);
+			}
 
 		</script>	
 		
@@ -80,9 +88,9 @@
 				
 				//set shader@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				var uniforms = {
-					aTexture:{type:'sampler2D', value: mytexture }
+					aTexture:{type:'t', value: mytexture }
 				};
-				var attributes = {
+				var attributes = { 
 					vertexOpacity: { type: 'f', value: [] }
 				};
 				var shaderMaterial =  new THREE.ShaderMaterial({
@@ -159,6 +167,33 @@
 				document.body.appendChild( container );	
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				window.addEventListener( 'resize', onWindowResize, false );
+				
+				
+				//深度图、法线图
+				var pars = {
+					minFilter: THREE.LinearFilter,
+					magFilter: THREE.LinearFilter,
+					format: THREE.RGBFormat,
+					stencilBuffer: false
+				}
+
+				var depthTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
+				var normalTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
+				// render depth
+				var depthMaterial = new THREE.MeshDepthMaterial();
+				scene.overrideMaterial = depthMaterial;
+				renderer.setClearColor('#00FFFF');
+				renderer.clearTarget(depthTexture, true, true);
+				renderer.render(scene, camera, depthTexture);
+
+				// render normal
+				//var normalMaterial = new THREE.MeshNormalMaterial();
+				//scene.overrideMaterial = normalMaterial;
+				//renderer.setClearColor('#000000');
+				//renderer.clearTarget(normalTexture, true, true);
+				//renderer.render(scene, camera, normalTexture);
+
+				
 
 			}
 
@@ -186,6 +221,8 @@
 				camera.lookAt( scene.position );
 				renderer.render( scene, camera );
 			}		
+			
+			
 			
 			
 		</script>
