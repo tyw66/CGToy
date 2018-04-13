@@ -55,6 +55,41 @@
 			//  gl_FragColor = texture2D(aTexture, vUv);
 			//}	
 			
+			uniform sampler2D bakedshadow;
+			uniform sampler2D hatch0;
+			uniform sampler2D hatch1;
+			uniform sampler2D hatch2;
+			varying vec2 vUv;
+			float shade(const in float shading, const in vec2 uv) {
+			  float shadingFactor;
+			  float stepSize = 1.0 / 3.0;
+			  float alpha = 0.0;
+			  float scaleWhite = 0.0;
+			  float scaleHatch0 = 0.0;
+			  float scaleHatch1 = 0.0;
+			  float scaleHatch2 = 0.0;
+			  if (shading <= stepSize) {
+				alpha = 3.0 * shading;
+				scaleHatch1 = alpha;
+				scaleHatch2 = 1.0 - alpha;
+			  }
+			  else if (shading > stepSize && shading <= 2.0 * stepSize) {
+				alpha = 3.0 * (shading - stepSize);
+				scaleHatch0 = alpha;
+				scaleHatch1 = 1.0 - alpha;
+			  }
+			  else if (shading > 2.0 * stepSize) {
+				alpha = 3.0 * (shading - stepSize * 2.0);
+				scaleWhite = alpha;
+				scaleHatch0 = 1.0 - alpha;
+			  }
+			  shadingFactor = scaleWhite + 
+				scaleHatch0 * texture2D(hatch0, uv).r +
+				scaleHatch1 * texture2D(hatch1, uv).r +
+				scaleHatch2 * texture2D(hatch2, uv).r;
+			  return shadingFactor;
+			}
+			
 			void main() {
 			  vec2 uv = vUv * 15.0;
 			  vec2 uv2 = vUv.yx * 10.0;
@@ -74,7 +109,9 @@
 			var windowHalfY = window.innerHeight / 2;
 
 			init();
+			init_model();
 			animate();
+			//test();
 
 			function mk_model(objName,textureName,x,y,z){
 				// load texture
@@ -150,23 +187,27 @@
 				camera.position.y = 0;
 				camera.position.z = 250;	
 				scene.add( camera );
-
-				// load model
-				mk_model('models/sphere.obj','texture/sphere_baked.png',0,-30,0);
-				//mk_model('models/lego.obj','texture/lego.png',0,0,0);
-				
+								
 				//setup renderer
 				renderer = new THREE.WebGLRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );	
 				renderer.setClearColor(0xEEEEEE, 1.0);
-					
+				
+				
 				//layout	
 				container = document.createElement( 'div' );
 				container.appendChild( renderer.domElement );
 				document.body.appendChild( container );	
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				window.addEventListener( 'resize', onWindowResize, false );
+					
+			}
+
+			function init_model(){
+				// load model
+				mk_model('models/sphere.obj','texture/sphere_baked.png',0,-30,0);
+				//mk_model('models/lego.obj','texture/lego.png',0,0,0);
 				
 				
 				//深度图、法线图
@@ -177,23 +218,26 @@
 					stencilBuffer: false
 				}
 
-				var depthTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
-				var normalTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
 				// render depth
-				var depthMaterial = new THREE.MeshDepthMaterial();
-				scene.overrideMaterial = depthMaterial;
-				renderer.setClearColor('#00FFFF');
-				renderer.clearTarget(depthTexture, true, true);
-				renderer.render(scene, camera, depthTexture);
+				//var depthTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
+				//var depthMaterial = new THREE.MeshDepthMaterial();
+				//scene.overrideMaterial = depthMaterial;
+				//renderer.setClearColor('#000000');
+				//renderer.clearTarget(depthTexture, true, true);
+				//renderer.render(scene, camera, depthTexture);
 
 				// render normal
-				//var normalMaterial = new THREE.MeshNormalMaterial();
-				//scene.overrideMaterial = normalMaterial;
-				//renderer.setClearColor('#000000');
-				//renderer.clearTarget(normalTexture, true, true);
-				//renderer.render(scene, camera, normalTexture);
+				var normalTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars)
+				var normalMaterial = new THREE.MeshNormalMaterial();
+				scene.overrideMaterial = normalMaterial;
+				renderer.setClearColor('#000000');
+				renderer.clearTarget(normalTexture, true, true);
+				renderer.render(scene, camera, normalTexture);
 
-				
+				//var composeCamera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, -10, 10);
+				//var composePlaneGeometry = new THREE.PlaneBufferGeometry(width, height);
+				//composePlaneMesh = new THREE.Mesh(composePlaneGeometry, composeMaterial);
+				//composeScene.add(composePlaneMesh);
 
 			}
 
@@ -222,8 +266,14 @@
 				renderer.render( scene, camera );
 			}		
 			
-			
-			
+			function test(){
+				var cube = new THREE.CubeGeometry(25, 25, 25);
+				var material = new THREE.MeshDepthMaterial();
+				var mesh = new THREE.Mesh(cube, material);
+				
+				scene.add(mesh);
+			}		
+					
 			
 		</script>
 			
