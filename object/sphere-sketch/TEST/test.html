@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>sketch sphere</title>
+		<title>test</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
@@ -34,9 +34,9 @@
 		<a href="http://threejs.org" target="_blank">three.js</a> - sphere
 		</div>
 
-		<script src="./ThreeJS/three.min.js"></script>
-		<script src="./ThreeJS/OBJLoader.js"></script>
-		<script src="./ThreeJS/ShaderMaterial.js" type = "module"></script>	
+		<script src="../ThreeJS/three.min.js"></script>
+		<script src="../ThreeJS/OBJLoader.js"></script>
+		<script src="../ThreeJS/ShaderMaterial.js" type = "module"></script>	
 		<!-- <script src="./sphere_sketch.js"></script> -->
 		
 		
@@ -60,8 +60,6 @@
 		<script id="hatch_fShaderCode" type="x-shader/x-fragment">
 			uniform sampler2D aTexture;
 			varying vec2 vUv;
-
-			//void main(void) {gl_FragColor = texture2D(aTexture, vUv);}	
 			
 			uniform sampler2D bakedshadow;
 			uniform sampler2D hatch0;
@@ -153,151 +151,97 @@
 		</script>
 		
 		<script>
-			init_obj_scene();
-			load_obj_model();
-			init_texture();
-			init_com_scene();
-			render_cycle();
 
-
-			var objScene,objCamera;
-			var comScene,comCamera;
-			var depthTexture, normalTexture, hatchTexture;
-			var keyLight,renderer;
-			var mouseX = 0, mouseY = 0;
+			var mouseX = 0;
+			var mouseY = 0;
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			
-			function init_obj_scene() {	
-				// setup scene
-				objScene = new THREE.Scene();
-
-				// setup light
-				var ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1.0 );//颜色 强度
-				objScene.add( ambientLight );
-				keyLight = new THREE.SpotLight(0xffffff, 1, 5000, Math.PI / 6, 25);
-                keyLight.position.set(-100, 100, 100);
-                keyLight.target.position.set(0, 0, 0);
-                objScene.add(keyLight);
+			var objScene = new THREE.Scene();
+			var objCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 );
+			var comScene = new THREE.Scene();
+			var	comCamera = new THREE.OrthographicCamera(-windowHalfX, windowHalfX, windowHalfY, -windowHalfY, 0.1, 2000);
+			var renderer = new THREE.WebGLRenderer( { antialias: true } )
+			var pars = {
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter,
+				format: THREE.RGBFormat,
+				stencilBuffer: false
+			}
+			var	depthTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
+			var	normalTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
+			var hatchTexture= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);	
+			var mytexture = THREE.ImageUtils.loadTexture('./sphere_baked.png');
+			var hatch0 = THREE.ImageUtils.loadTexture('./hatch_0.jpg');
+			var hatch1 = THREE.ImageUtils.loadTexture('./hatch_1.jpg');
+			var hatch2 = THREE.ImageUtils.loadTexture('./hatch_2.jpg');			
+			
+			
+			init();
+			render();
+			//render_cycle();
+			
+			function init(){
+				//场景
+				//objScene.fog = new THREE.Fog(0x0000ee,0.1,2000);
 				
-				// setup objCamera
-				objCamera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 2000 );
-				objCamera.position.x = 0;
-				objCamera.position.y = 0;
-				objCamera.position.z = 250;	
-				objScene.add( objCamera );
-								
-				//setup renderer
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
+				//相机
+				//objCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 );		
+				objCamera.position.set(0,100,100);				
+				objCamera.lookAt(objScene.position);
+				objScene.add(objCamera);
+				
+				//灯光
+				//var ambientLight = new THREE.AmbientLight( 0xfff, 1.0 );//颜色 强度
+				//objScene.add(ambientLight);				
+				//var keyLight = new THREE.SpotLight(0xfff, 1, 5000, Math.PI / 6, 25);
+                //keyLight.position.set(-100, 100, 100);
+                //keyLight.target.position.set(0, 0, 0);
+                //objScene.add(keyLight);
+				
+				//模型
+				var objloader = new THREE.OBJLoader();
+				var obj;				
+				objloader.load(
+					'./sphere.obj',
+					function(obj){
+						//console.log("obj is mesh?"+ obj instanceof THREE.Mesh);
+						obj.position.set(0,0,0);
+						objScene.add(obj);
+					},
+					function(xhr){console.log("On obj model Progress.....");},
+					function(xhr){console.log("OBJ model load Error.");}					
+				);
+				
+				//材质
+				
+				
+				
+				//渲染器				
+				//renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );	
-				renderer.setClearColor(0xEEEEEE, 1.0);
-								
-				//layout	
-				container = document.createElement( 'div' );
-				container.appendChild( renderer.domElement );
-				document.body.appendChild( container );	
+				renderer.setClearColor(0xeeeeee, 1.0);
+						
+					
+				//布局
+				document.body.appendChild( renderer.domElement );				
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				window.addEventListener( 'resize', onWindowResize, false );
-			}
-			
-			
-			function load_obj_model(){
-				var manager = new THREE.LoadingManager();
-					manager.onProgress = function ( item, loaded, total ) {
-					console.log( item, loaded, total );
-				};
-				var loader = new THREE.OBJLoader();
-				loader.load( 'models/sphere.obj', afterLoad, onProgress, onError );
-							
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-					}
-				};
-				var onError = function ( xhr ) {
-				};
-		
-				var object;
-				function afterLoad( object ) {
-					//object.traverse( function ( child ) {
-					//	if ( child instanceof THREE.Mesh ) {
-					//		child.material = mk_hatchMat();;//设置shader		
-					//	}
-					//} );
-					//设置模型在场景中的位置
-					object.position.x = 20;
-					object.position.y = 0;
-					object.position.z = 0;	
-					objScene.add(object);
-					console.log("object instanceof THREE.Mesh?:"+object instanceof THREE.Mesh)
-				}
-			}
+
+				//////////////
+				//输出的合成				
+				var finalPlaneGeometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);					
+				//将前几步输出到 FrameBuffer (也就是WebGLRenderTarget)的结果作为这个矩形表面的贴图
+				var finalMesh = new THREE.Mesh();
+				finalMesh.geometry = finalPlaneGeometry;
+				//finalMesh.material = new THREE.MeshBasicMaterial({color:0xff0000});
+				finalMesh.material = mk_composeMat();
+				comScene.add(finalMesh);
 				
-			function init_texture(){
-				var pars = {
-					minFilter: THREE.LinearFilter,
-					magFilter: THREE.LinearFilter,
-					format: THREE.RGBFormat,
-					stencilBuffer: false
-				}
-				depthTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
-				normalTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
-				hatchTexture= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);			
+				comCamera.lookAt(objScene.position);
+				comCamera.position.set(0,0,100);	
+				
 			}
-			
-			
-			function init_com_scene(){
-				comScene = new THREE.Scene();
-				comCamera = new THREE.OrthographicCamera(-window.innerWidth / 2, window.innerWidth / 2, window.innerHeight / 2, -window.innerHeight / 2, -10, 10);
-				var composePlaneGeometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);							
-				var composePlaneMesh = new THREE.Mesh(composePlaneGeometry, mk_composeMat());//将前几步输出到 FrameBuffer (也就是WebGLRenderTarget)的结果作为这个矩形表面的贴图，
-				comScene.add(composePlaneMesh);
-
-			}
-
-			
-			function mk_hatchMat(){
-				//var mytexture = THREE.ImageUtils.loadTexture('texture/sphere_baked.png');
-				var mytexture = THREE.ImageUtils.loadTexture('texture/sphere_baked.png');
-				var hatch0 = THREE.ImageUtils.loadTexture('texture/hatch_0.jpg');
-				var hatch1 = THREE.ImageUtils.loadTexture('texture/hatch_1.jpg');
-				var hatch2 = THREE.ImageUtils.loadTexture('texture/hatch_2.jpg');
-			
-				var uniPars = {
-					aTexture:{type:'t', value: mytexture},
-					hatch0:{type:'t', value: hatch0},
-					hatch1:{type:'t', value: hatch1},
-					hatch2:{type:'t', value: hatch2}
-				};
-
-				var material =  new THREE.ShaderMaterial({
-					uniforms : uniPars,
-				//	attributes:attributes,
-					vertexShader:document.getElementById('hatch_vShaderCode').textContent,
-					fragmentShader:document.getElementById('hatch_fShaderCode').textContent
-				}); 
-				return material;
-			}
-			
-			function mk_composeMat(){
-
-				var uniPars = {
-					depthtexture:{type:'t', value: depthTexture },
-					normaltexture:{type:'t', value: normalTexture},
-					hatchtexture:{type:'t', value: hatchTexture}
-				};
-					
-				var material =  new THREE.ShaderMaterial({
-					uniforms : uniPars,
-				//	attributes:attributes,
-					vertexShader:document.getElementById('compose_vShaderCode').textContent,
-					fragmentShader:document.getElementById('compose_fShaderCode').textContent
-				}); 
-				return material;
-			}
-	
 			function onWindowResize() {
 				windowHalfX = window.innerWidth / 2;
 				windowHalfY = window.innerHeight / 2;
@@ -310,9 +254,39 @@
 				mouseX = ( event.clientX - windowHalfX ) ;
 				mouseY = ( event.clientY - windowHalfY ) ;
 			}
+	
+			function mk_hatchMat(){			
+				var uniPars = {
+					aTexture:{type:'t', value: mytexture},
+					hatch0:{type:'t', value: hatch0},
+					hatch1:{type:'t', value: hatch1},
+					hatch2:{type:'t', value: hatch2}
+				};
 
-
+				var hatchMaterial =  new THREE.ShaderMaterial({
+					uniforms : uniPars,
+					vertexShader:document.getElementById('hatch_vShaderCode').textContent,
+					fragmentShader:document.getElementById('hatch_fShaderCode').textContent
+				}); 
+				return hatchMaterial;
+			}
 			
+			function mk_composeMat(){
+				var uniPars = {
+					depthtexture:{type:'t', value: depthTexture.texture },
+					normaltexture:{type:'t', value: normalTexture.texture},
+					hatchtexture:{type:'t', value: hatchTexture.texture}
+				};
+					
+				var composeMaterial =  new THREE.ShaderMaterial({
+					uniforms : uniPars,
+					vertexShader:document.getElementById('compose_vShaderCode').textContent,
+					fragmentShader:document.getElementById('compose_fShaderCode').textContent
+				}); 
+				return composeMaterial;
+			}
+	
+				
 			////////渲染输出部分//////			
 			function render_cycle() {
 				requestAnimationFrame( render_cycle );
@@ -324,57 +298,46 @@
 				renderNormal();
 				renderHetch();
 				
-				compose();		
+				return compose();		
 			}				
 			function renderAnimate(){
+				console.log("renderAnimate");
 				objCamera.position.x += ( mouseX - objCamera.position.x );
 				objCamera.position.y += ( - mouseY - objCamera.position.y ) ;
-				objCamera.lookAt( objScene.position );
+				return objCamera.lookAt( objScene.position );
 			}
-			function renderDepth(){				
+			function renderDepth(){		
+				console.log("renderDepth");
 				var depthMaterial = new THREE.MeshDepthMaterial();
 				objScene.overrideMaterial = depthMaterial;
 				renderer.setClearColor('#000000');
 				renderer.clearTarget(depthTexture, true, true);
-				renderer.render(objScene, objCamera, depthTexture);
+				return renderer.render(objScene, objCamera, depthTexture);
 			}			
 			function renderNormal(){
+				console.log("renderNormal");
 				var normalMaterial = new THREE.MeshNormalMaterial();
 				objScene.overrideMaterial = normalMaterial;
 				renderer.setClearColor('#000000');
 				renderer.clearTarget(normalTexture, true, true);
-				renderer.render(objScene, objCamera, normalTexture);
+				return renderer.render(objScene, objCamera, normalTexture);
 			}		
 			function renderHetch(){
+				console.log("renderHetch");
 				var hatchMaterial = mk_hatchMat();
 				objScene.overrideMaterial = hatchMaterial;
 				renderer.setClearColor('#ffffff');
 				renderer.clearTarget(hatchTexture, true, true);
-				renderer.render(objScene, objCamera, hatchTexture);
+				return renderer.render(objScene, objCamera, hatchTexture);
 			}
 			
-			function compose(){
+			function compose(){	
+				console.log("compose");	
+				return renderer.render(comScene, comCamera);
+			}
+			
 	
-				 renderer.render(comScene, comCamera);
-			}
-			
-			
-			
-			
-			
-			function test(){
-				var cube = new THREE.CubeGeometry(25, 25, 25);
-				var material = new THREE.MeshDepthMaterial();
-				var mesh = new THREE.Mesh(cube, material);
-				
-				objScene.add(mesh);
-			}		
-					
-			//var textureLoader = new THREE.TextureLoader( manager );
-			//var mytexture = textureLoader.load( textureName );
-			//var hatch0 = textureLoader.load();
-			//var hatch1 = textureLoader.load('texture/hatch_1.jpg');
-			//var hatch2 = textureLoader.load('texture/hatch_2.jpg');
+	
 		</script>
 			
 		
