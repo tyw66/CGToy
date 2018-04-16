@@ -174,12 +174,14 @@
 			var mytexture = THREE.ImageUtils.loadTexture('./sphere_baked.png');
 			var hatch0 = THREE.ImageUtils.loadTexture('./hatch_0.jpg');
 			var hatch1 = THREE.ImageUtils.loadTexture('./hatch_1.jpg');
-			var hatch2 = THREE.ImageUtils.loadTexture('./hatch_2.jpg');			
+			var hatch2 = THREE.ImageUtils.loadTexture('./hatch_2.jpg');		
+			
+			var finalMesh = new THREE.Mesh();
 			
 			
 			init();
-			render();
-			//render_cycle();
+			//render();
+			render_cycle();
 			
 			function init(){
 				//场景
@@ -232,9 +234,10 @@
 				//输出的合成				
 				var finalPlaneGeometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);					
 				//将前几步输出到 FrameBuffer (也就是WebGLRenderTarget)的结果作为这个矩形表面的贴图
-				var finalMesh = new THREE.Mesh();
+				//var finalMesh = new THREE.Mesh();
 				finalMesh.geometry = finalPlaneGeometry;
 				//finalMesh.material = new THREE.MeshBasicMaterial({color:0xff0000});
+				
 				finalMesh.material = mk_composeMat();
 				comScene.add(finalMesh);
 				
@@ -298,41 +301,42 @@
 				renderNormal();
 				renderHetch();
 				
-				return compose();		
+				return compose();
 			}				
 			function renderAnimate(){
-				console.log("renderAnimate");
+				//console.log("renderAnimate");
 				objCamera.position.x += ( mouseX - objCamera.position.x );
 				objCamera.position.y += ( - mouseY - objCamera.position.y ) ;
 				return objCamera.lookAt( objScene.position );
 			}
 			function renderDepth(){		
-				console.log("renderDepth");
+				//console.log("renderDepth");
 				var depthMaterial = new THREE.MeshDepthMaterial();
 				objScene.overrideMaterial = depthMaterial;
-				renderer.setClearColor('#000000');
+				renderer.setClearColor(0x000000);
 				renderer.clearTarget(depthTexture, true, true);
 				return renderer.render(objScene, objCamera, depthTexture);
 			}			
 			function renderNormal(){
-				console.log("renderNormal");
+				//console.log("renderNormal");
 				var normalMaterial = new THREE.MeshNormalMaterial();
 				objScene.overrideMaterial = normalMaterial;
-				renderer.setClearColor('#000000');
+				renderer.setClearColor(0x000000);
 				renderer.clearTarget(normalTexture, true, true);
 				return renderer.render(objScene, objCamera, normalTexture);
-			}		
+			}
 			function renderHetch(){
-				console.log("renderHetch");
+				//console.log("renderHetch");
 				var hatchMaterial = mk_hatchMat();
 				objScene.overrideMaterial = hatchMaterial;
-				renderer.setClearColor('#ffffff');
+				renderer.setClearColor(0xeeeeee);
 				renderer.clearTarget(hatchTexture, true, true);
 				return renderer.render(objScene, objCamera, hatchTexture);
 			}
 			
 			function compose(){	
-				console.log("compose");	
+				//console.log("compose");	
+				finalMesh.material = mk_composeMat();
 				return renderer.render(comScene, comCamera);
 			}
 			
