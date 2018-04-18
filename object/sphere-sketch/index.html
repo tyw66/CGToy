@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>test</title>
+		<title>Sphere-Sketch</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
@@ -25,20 +25,17 @@
 				color: #f00;
 				font-weight: bold; text-decoration: underline; cursor: pointer 
 			}
-		</style>		
-		
+		</style>
 	</head>
 
 	<body>
 		<div id="info">
-		<a href="http://threejs.org" target="_blank">three.js</a> - sphere
+			<a href="https://zhuanlan.zhihu.com/p/35594034" target="_blank">说明文档 - 知乎 </a> 
 		</div>
 
-		<script src="../ThreeJS/three.min.js"></script>
-		<script src="../ThreeJS/OBJLoader.js"></script>
-		<script src="../ThreeJS/ShaderMaterial.js" type = "module"></script>	
-		<!-- <script src="./sphere_sketch.js"></script> -->
-		
+		<script src="./lib/three.min.js"></script>
+		<script src="./lib/OBJLoader.js"></script>
+		<script src="./lib/ShaderMaterial.js" type = "module"></script>	
 		
 		<script id="hatch_vShaderCode" type="x-shader/x-vertex">
 			varying vec2 vUv;
@@ -170,10 +167,10 @@
 			var	depthBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var	normalBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var hatchBuffer= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);	
-			var mytexture = THREE.ImageUtils.loadTexture('./sphere.png');
-			var hatch0 = THREE.ImageUtils.loadTexture('./hatch_0.jpg');
-			var hatch1 = THREE.ImageUtils.loadTexture('./hatch_1.jpg');
-			var hatch2 = THREE.ImageUtils.loadTexture('./hatch_2.jpg');		
+			var mytexture = THREE.ImageUtils.loadTexture('./texture/sphere.png');
+			var hatch0 = THREE.ImageUtils.loadTexture('./texture/hatch_0.jpg');
+			var hatch1 = THREE.ImageUtils.loadTexture('./texture/hatch_2.jpg');
+			var hatch2 = THREE.ImageUtils.loadTexture('./texture/hatch_4.jpg');
 			
 			var finalMesh = new THREE.Mesh();
 			
@@ -213,7 +210,7 @@
 				var objloader = new THREE.OBJLoader();
 				var obj;				
 				objloader.load(
-					'./sphere.obj',
+					'./models/sphere.obj',
 					function(obj){
 						//console.log("obj is mesh?"+ obj instanceof THREE.Mesh);
 						obj.position.set(0,0,0);
@@ -301,8 +298,9 @@
 			}				
 			function renderAnimate(){
 				//console.log("renderAnimate");
-				objCamera.position.x += ( mouseX - objCamera.position.x );
-				objCamera.position.y += ( - mouseY - objCamera.position.y ) ;
+				objCamera.position.x = mouseX;
+				objCamera.position.y = - mouseY;
+				
 				return objCamera.lookAt( objScene.position );
 			}
 			function renderDepth(){		
