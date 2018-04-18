@@ -152,6 +152,7 @@
 			var mouseY = 0;
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
+			var view_distance = 150;//相机离物体的距离
 			
 			var objScene = new THREE.Scene();
 			var comScene = new THREE.Scene();
@@ -184,7 +185,7 @@
 				//objScene.fog = new THREE.Fog(0x0000ee,0.1,2000);
 				
 				//相机				
-				objCamera.position.set(0,100,100);				
+				objCamera.position.set(0,60,view_distance);				
 				objCamera.lookAt(objScene.position);
 				objScene.add(objCamera);
 				
@@ -247,8 +248,11 @@
 			}
 
 			function onDocumentMouseMove( event ) {
-				mouseX = ( event.clientX - windowHalfX ) ;
-				mouseY = ( event.clientY - windowHalfY ) ;
+				//mouseX = ( event.clientX - windowHalfX ) ;
+				//mouseY = ( event.clientY - windowHalfY ) ;
+				
+				mouseX = ( event.clientX ) ;
+				mouseY = ( event.clientY ) ;
 			}
 	
 			function mk_hatchMat(){			
@@ -297,14 +301,12 @@
 				return compose();
 			}				
 			function renderAnimate(){
-				//console.log("renderAnimate");
-				objCamera.position.x = mouseX;
-				objCamera.position.y = - mouseY;
-				
+				objCamera.position.x = view_distance * Math.cos( (360*mouseX/window.innerWidth-90)*3.14/180 );
+				objCamera.position.z = view_distance * Math.sin( (360*mouseX/window.innerWidth-90)*3.14/180 );
+				objCamera.position.y = view_distance * Math.sin( (180*mouseY/window.innerHeight-90)*3.14/180);
 				return objCamera.lookAt( objScene.position );
 			}
 			function renderDepth(){		
-				//console.log("renderDepth");
 				var depthMaterial = new THREE.MeshDepthMaterial();
 				objScene.overrideMaterial = depthMaterial;
 				renderer.setClearColor(0x000000);
@@ -312,7 +314,6 @@
 				return renderer.render(objScene, objCamera, depthBuffer);
 			}			
 			function renderNormal(){
-				//console.log("renderNormal");
 				var normalMaterial = new THREE.MeshNormalMaterial();
 				objScene.overrideMaterial = normalMaterial;
 				renderer.setClearColor(0x000000);
@@ -320,7 +321,6 @@
 				return renderer.render(objScene, objCamera, normalBuffer);
 			}
 			function renderHetch(){
-				//console.log("renderHetch");
 				var hatchMaterial = mk_hatchMat();
 				objScene.overrideMaterial = hatchMaterial;
 				renderer.setClearColor(0xeeeeee);
