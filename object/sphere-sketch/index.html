@@ -93,10 +93,10 @@
 			}
 					
 			void main() {
-			  vec2 uv = vUv * 4.0;
+			  vec2 uv = vUv * 8.0;
 			  vec2 uv2 = vUv.yx * 4.0;
-			  float shading = texture2D(aTexture, vUv).r + 0.1 ;
-			  float crossedShading = shade(shading, uv) * shade(shading, uv2)*0.8 + 0.2;
+			  float shading = texture2D(aTexture, vUv).r  ;
+			  float crossedShading = shade(shading, uv) * shade(shading, uv2);
 			  gl_FragColor = vec4(vec3(crossedShading), 1.0);
 			}
 
@@ -111,38 +111,39 @@
 
 			float planeDistance(const in vec3 positionA, const in vec3 normalA, 
 								const in vec3 positionB, const in vec3 normalB) {
-			  vec3 positionDelta = positionB-positionA;
-			  float planeDistanceDelta = max(abs(dot(positionDelta, normalA)), abs(dot(positionDelta, normalB)));
-			  return planeDistanceDelta;
+				vec3 positionDelta = positionB-positionA;
+				float planeDistanceDelta = max(abs(dot(positionDelta, normalA)), abs(dot(positionDelta, normalB)));
+				return planeDistanceDelta;
 			}
 
 			void main() {
-			  float depthCenter = texture2D(depthtexture, vUv).r;
-			  float px = 1.0/800.0;
+				float depthCenter = texture2D(depthtexture, vUv).r;
+				float px = 1.0/800.0;
 
-			  vec3 leftpos = vec3(vUv.s - px, vUv.t, 1.0 - texture2D(depthtexture, vec2(vUv.s - px, vUv.t)).r);
-			  vec3 rightpos = vec3(vUv.s + px, vUv.t, 1.0 - texture2D(depthtexture, vec2(vUv.s + px, vUv.t)).r);
-			  vec3 uppos = vec3(vUv.s, vUv.t - px, 1.0 - texture2D(depthtexture, vec2(vUv.s, vUv.t - px)).r);
-			  vec3 downpos = vec3(vUv.s, vUv.t + px, 1.0 - texture2D(depthtexture, vec2(vUv.s, vUv.t + px)).r);
+				vec3 leftpos = vec3(vUv.s - px, vUv.t, 1.0 - texture2D(depthtexture, vec2(vUv.s - px, vUv.t)).r);
+				vec3 rightpos = vec3(vUv.s + px, vUv.t, 1.0 - texture2D(depthtexture, vec2(vUv.s + px, vUv.t)).r);
+				vec3 uppos = vec3(vUv.s, vUv.t - px, 1.0 - texture2D(depthtexture, vec2(vUv.s, vUv.t - px)).r);
+				vec3 downpos = vec3(vUv.s, vUv.t + px, 1.0 - texture2D(depthtexture, vec2(vUv.s, vUv.t + px)).r);
 
-			  vec3 leftnor = texture2D(normaltexture, vec2(vUv.s - px, vUv.t)).xyz;
-			  vec3 rightnor = texture2D(normaltexture, vec2(vUv.s + px, vUv.t)).xyz;
-			  vec3 upnor = texture2D(normaltexture, vec2(vUv.s, vUv.t - px)).xyz;
-			  vec3 downnor = texture2D(normaltexture, vec2(vUv.s, vUv.t + px)).xyz;
+				vec3 leftnor = texture2D(normaltexture, vec2(vUv.s - px, vUv.t)).xyz;
+				vec3 rightnor = texture2D(normaltexture, vec2(vUv.s + px, vUv.t)).xyz;
+				vec3 upnor = texture2D(normaltexture, vec2(vUv.s, vUv.t - px)).xyz;
+				vec3 downnor = texture2D(normaltexture, vec2(vUv.s, vUv.t + px)).xyz;
 
-			  vec2 planeDist = vec2(
-				planeDistance(leftpos, leftnor, rightpos, rightnor),
-				planeDistance(uppos, upnor, downpos, downnor));
+				vec2 planeDist = vec2(
+					planeDistance(leftpos, leftnor, rightpos, rightnor),
+					planeDistance(uppos, upnor, downpos, downnor)
+				);
 
-			  float planeEdge = 2.5 * length(planeDist);
-			  planeEdge = 1.0 - 0.5 * smoothstep(0.0, depthCenter, planeEdge);
+				float planeEdge = 2.5 * length(planeDist);
+				planeEdge = 1.0 - 0.5 * smoothstep(0.0, depthCenter, planeEdge);
 
-			  float normEdge = max(length(leftnor - rightnor), length(upnor - downnor));
-			  normEdge = 1.0 - 0.5 * smoothstep(0.0, 0.5, normEdge); 
+				float normEdge = max(length(leftnor - rightnor), length(upnor - downnor));
+				normEdge = 1.0 - 0.5 * smoothstep(0.0, 0.5, normEdge); 
 
-			  float edge= planeEdge * normEdge;
-			  vec4 hatch = texture2D(hatchtexture, vUv);
-			  gl_FragColor = vec4(vec3(hatch * edge), 1.0);
+				float edge= planeEdge * normEdge;
+				vec4 hatch = texture2D(hatchtexture, vUv);
+				gl_FragColor = vec4(vec3(hatch * edge), 1.0);
 			}
 		</script>
 		
@@ -170,8 +171,8 @@
 			var hatchBuffer= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);	
 			var mytexture = THREE.ImageUtils.loadTexture('./texture/sphere.png');
 			var hatch0 = THREE.ImageUtils.loadTexture('./texture/hatch_0.jpg');
-			var hatch1 = THREE.ImageUtils.loadTexture('./texture/hatch_2.jpg');
-			var hatch2 = THREE.ImageUtils.loadTexture('./texture/hatch_4.jpg');
+			var hatch1 = THREE.ImageUtils.loadTexture('./texture/hatch_1.jpg');
+			var hatch2 = THREE.ImageUtils.loadTexture('./texture/hatch_2.jpg');
 			
 			var finalMesh = new THREE.Mesh();
 			
@@ -205,6 +206,7 @@
 				//布局
 				document.body.appendChild( renderer.domElement );				
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'DOMMouseScroll' ,onDocumentMouseWheel, false);
 				window.addEventListener( 'resize', onWindowResize, false );
 												
 				//模型
@@ -248,12 +250,20 @@
 			}
 
 			function onDocumentMouseMove( event ) {
-				//mouseX = ( event.clientX - windowHalfX ) ;
-				//mouseY = ( event.clientY - windowHalfY ) ;
-				
 				mouseX = ( event.clientX ) ;
 				mouseY = ( event.clientY ) ;
 			}
+			
+			function onDocumentMouseWheel( event ) {
+				if(event.detail == -3){//向前滚
+					view_distance -= 10;					
+				}
+				else{//向后滚
+					view_distance += 10;
+				}
+				if(view_distance<0.1)view_distance=0.1;
+			}
+			
 	
 			function mk_hatchMat(){			
 				var uniPars = {
@@ -274,7 +284,7 @@
 			function mk_composeMat(){
 				var uniPars = {
 					//depthtexture:{type:'t', value: depthBuffer.texture },
-					normaltexture:{type:'t', value: normalBuffer.texture},
+					//normaltexture:{type:'t', value: normalBuffer.texture},
 					hatchtexture:{type:'t', value: hatchBuffer.texture}
 				};
 					
@@ -294,7 +304,7 @@
 			}
 			function render() {
 				renderAnimate();
-				//renderDepth();
+				renderDepth();
 				renderNormal();
 				renderHetch();
 				
@@ -309,14 +319,14 @@
 			function renderDepth(){		
 				var depthMaterial = new THREE.MeshDepthMaterial();
 				objScene.overrideMaterial = depthMaterial;
-				renderer.setClearColor(0x000000);
+				renderer.setClearColor(0xFFFFFF);
 				renderer.clearTarget(depthBuffer, true, true);
 				return renderer.render(objScene, objCamera, depthBuffer);
 			}			
 			function renderNormal(){
 				var normalMaterial = new THREE.MeshNormalMaterial();
 				objScene.overrideMaterial = normalMaterial;
-				renderer.setClearColor(0x000000);
+				renderer.setClearColor(0xFFFFFF);
 				renderer.clearTarget(normalBuffer, true, true);
 				return renderer.render(objScene, objCamera, normalBuffer);
 			}
@@ -328,8 +338,7 @@
 				return renderer.render(objScene, objCamera, hatchBuffer);
 			}
 			
-			function compose(){	
-				//console.log("compose");	
+			function compose(){		
 				finalMesh.material = mk_composeMat();
 				return renderer.render(comScene, comCamera);
 			}
