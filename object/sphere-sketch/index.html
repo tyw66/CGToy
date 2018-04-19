@@ -93,8 +93,8 @@
 			}
 					
 			void main() {
-			  vec2 uv = vUv * 8.0;
-			  vec2 uv2 = vUv.yx * 4.0;
+			  vec2 uv = vUv * 10.0;
+			  vec2 uv2 = vUv.yx * 8.0;
 			  float shading = texture2D(aTexture, vUv).r  ;
 			  float crossedShading = shade(shading, uv) * shade(shading, uv2);
 			  gl_FragColor = vec4(vec3(crossedShading), 1.0);
@@ -169,7 +169,7 @@
 			var	depthBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var	normalBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var hatchBuffer= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);	
-			var mytexture = THREE.ImageUtils.loadTexture('./texture/sphere.png');
+			var mytexture = THREE.ImageUtils.loadTexture('./texture/geo.png');
 			var hatch0 = THREE.ImageUtils.loadTexture('./texture/hatch_0.jpg');
 			var hatch1 = THREE.ImageUtils.loadTexture('./texture/hatch_1.jpg');
 			var hatch2 = THREE.ImageUtils.loadTexture('./texture/hatch_2.jpg');
@@ -191,12 +191,12 @@
 				objScene.add(objCamera);
 				
 				//灯光
-				//var ambientLight = new THREE.AmbientLight( 0xfff, 1.0 );//颜色 强度
-				//objScene.add(ambientLight);				
-				//var keyLight = new THREE.SpotLight(0xfff, 1, 5000, Math.PI / 6, 25);
-                //keyLight.position.set(-100, 100, 100);
-                //keyLight.target.position.set(0, 0, 0);
-                //objScene.add(keyLight);								
+				var ambientLight = new THREE.AmbientLight( 0xfff, 1.0 );//颜色 强度
+				objScene.add(ambientLight);				
+				var keyLight = new THREE.SpotLight(0xfff, 1, 5000, Math.PI / 6, 25);
+                keyLight.position.set(100, 100, 100);
+                keyLight.target.position.set(0, 0, 0);
+                objScene.add(keyLight);								
 				
 				//渲染器				
 				//renderer.setPixelRatio( window.devicePixelRatio );
@@ -213,10 +213,10 @@
 				var objloader = new THREE.OBJLoader();
 				var obj;				
 				objloader.load(
-					'./models/sphere.obj',
+					'./models/geo.obj',
 					function(obj){
 						//console.log("obj is mesh?"+ obj instanceof THREE.Mesh);
-						obj.position.set(0,0,0);
+						obj.position.set(0,-20,0);
 						objScene.add(obj);
 					},
 					function(xhr){console.log("On obj model Progress.....");},
@@ -284,7 +284,7 @@
 			function mk_composeMat(){
 				var uniPars = {
 					//depthtexture:{type:'t', value: depthBuffer.texture },
-					//normaltexture:{type:'t', value: normalBuffer.texture},
+					normaltexture:{type:'t', value: normalBuffer.texture},
 					hatchtexture:{type:'t', value: hatchBuffer.texture}
 				};
 					
