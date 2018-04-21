@@ -178,6 +178,7 @@
 			var objCamera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 2000 );
 			var	comCamera = new THREE.OrthographicCamera(-windowHalfX, windowHalfX, windowHalfY, -windowHalfY, 0.1, 2000);
 			var renderer = new THREE.WebGLRenderer( { antialias: true } );
+			var finalMesh = new THREE.Mesh();
 			
 			var pars = {
 				minFilter: THREE.LinearFilter,
@@ -188,16 +189,16 @@
 			var	depthBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var	normalBuffer = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);
 			var hatchBuffer= new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, pars);				
-			var myModel = './models/m.obj';
-			var myTexture = THREE.ImageUtils.loadTexture('./texture/t.png');
-			var hatch0 = THREE.ImageUtils.loadTexture('./texture/h0.png');
-			var hatch1 = THREE.ImageUtils.loadTexture('./texture/h1.png');
-			var hatch2 = THREE.ImageUtils.loadTexture('./texture/h2.png');
-			var hatch3 = THREE.ImageUtils.loadTexture('./texture/h3.png');
-			var hatch4 = THREE.ImageUtils.loadTexture('./texture/h4.png');
-			var hatch5 = THREE.ImageUtils.loadTexture('./texture/h5.png');
+			var hatch0 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h0.png');
+			var hatch1 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h1.png');
+			var hatch2 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h2.png');
+			var hatch3 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h3.png');
+			var hatch4 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h4.png');
+			var hatch5 = THREE.ImageUtils.loadTexture('./res/hatch-texture/h5.png');
 			
-			var finalMesh = new THREE.Mesh();
+			//自定义加载
+			var myModel = './res/sphere.obj';
+			var myTexture = THREE.ImageUtils.loadTexture('./res/sphere.png');
 			
 			
 			init();
