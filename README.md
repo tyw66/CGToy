@@ -3,8 +3,8 @@
 
 - 一个记录图形学学习的代码仓库
 
-- 向知乎[milo](https://zhuanlan.zhihu.com/milocode)大佬学习
 
 ## 已完成
 
-- [画个圆球](./object/sphere)
+- [画个圆球1 基本](./object/sphere)
+- [画个圆球2 three.js+素描风格](./object/sphere-sketch)
