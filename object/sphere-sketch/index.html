@@ -120,7 +120,7 @@
 
 			void main() {
 				float depthCenter = texture2D(depthtexture, vUv).r;
-				float px = 1.0/800.0;//
+				float px = 1.0/1000.0;//
 
 				/*
 				vec3 leftpos = vec3(vUv.s - px, vUv.t, 1.0 - texture2D(depthtexture, vec2(vUv.s - px, vUv.t)).r);
@@ -129,7 +129,7 @@
 				vec3 downpos = vec3(vUv.s, vUv.t + px, 1.0 - texture2D(depthtexture, vec2(vUv.s, vUv.t + px)).r);
 				*/
 				
-				///todo 疑问？这里加减px是在贴图座标上加减还是在屏幕坐标上加减？？？？？		
+				///这里加减px是在屏幕坐标上加减 因为normaltexture是webglrendertaget（屏幕）的纹理
 				vec3 leftnor = texture2D(normaltexture, vec2(vUv.s - px, vUv.t)).xyz;
 				vec3 rightnor = texture2D(normaltexture, vec2(vUv.s + px, vUv.t)).xyz;
 				vec3 upnor = texture2D(normaltexture, vec2(vUv.s, vUv.t - px)).xyz;
@@ -195,8 +195,8 @@
 
 			
 			//自定义加载
-			var myModel = './res/sphere.obj';
-			var myTexture = THREE.ImageUtils.loadTexture('./res/sphere.png');
+			var myModel = './res/geo.obj';
+			var myTexture = THREE.ImageUtils.loadTexture('./res/geo.png');
 			
 			
 			init();
