@@ -160,7 +160,7 @@ int main(int argc, char *argv[]){
     int w = 1024, h = 768;
     Vec *c = new Vec[w * h];
     //摄像机 位置方向
-    Ray cam(Vec(50, 52, 295.6), Vec(0, 0, -1).norm());
+    Ray cam(Vec(50, 52, 295.6), Vec(0, -0.1, -1).norm());
     //摄影机目标X方向的增量
     Vec cx = Vec(w * 0.5135 / h);//0.5135是视角
     //摄影机目标Y方向的增量
