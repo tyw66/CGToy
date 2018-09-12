@@ -10,11 +10,12 @@
 
 //#define M_PI 3.1415
 
+//产生0-1随机数 
 double erand48(unsigned short xsubi[3]) {
     return (double)rand() / (double)RAND_MAX;
 }
 
- // Usage: time ./smallpt 5000 && xv image.ppm
+//向量 
 struct Vec{
     double x, y, z; // position, also color (r,g,b)
     Vec(double x_ = 0, double y_ = 0, double z_ = 0){
@@ -50,16 +51,20 @@ struct Vec{
     }
 };
 
+//射线 
 struct Ray{
     Vec o, d;
     Ray(Vec o_, Vec d_) : o(o_), d(d_) {}
 };
+
+//表面类型 
 enum Refl_t{
     DIFF,
     SPEC,
     REFR
 }; // material types, used in radiance()
 
+//球体 
 struct Sphere{
     double rad;  // radius
     Vec p, e, c; // position, emission, color
@@ -133,24 +138,33 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
 	Vec f = obj.c;
 	//颜色的最大分量 
     double p = f.x > f.y && f.x > f.z ? f.x : f.y > f.z ? f.y : f.z; // max refl
-    // 
-    if (++depth > 5)if (erand48(Xi) < p)f = f * (1 / p); else return obj.e; //R.R.
+    //Russian Roulette:Stop the recursion randomly based on the surface reflectivity.
+    if (++depth > 5){
+    	if (erand48(Xi) < p)
+			f = f * (1 / p);
+		else 
+			return obj.e; //R.R.	
+    }
+	
     
     // Ideal DIFFUSE reflection
     if (obj.refl == DIFF){
-        double r1 = 2 * M_PI * erand48(Xi);
+        double r1 = 2 * M_PI * erand48(Xi);//随机角度 
 		double r2 = erand48(Xi);
-		double r2s = sqrt(r2);
-        Vec w = nl, u = ((fabs(w.x) > 0.1 ? Vec(0, 1) : Vec(1)) % w).norm();
+		double r2s = sqrt(r2);//random distance from center  
+        Vec w = nl;
+		Vec u = ((fabs(w.x) > 0.1 ? Vec(0, 1) : Vec(1)) % w).norm();
 		Vec v = w % u;
         Vec d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
         return obj.e + f.mult(radiance(Ray(x, d), depth, Xi));
     }
+  
 	// Ideal SPECULAR reflection
     else if (obj.refl == SPEC){
         return obj.e + f.mult(radiance(Ray(x, r.d - n * 2 * n.dot(r.d)), depth, Xi));
     }
-
+    
+    
     // Ideal dielectric REFRACTION
     Ray reflRay(x, r.d - n * 2 * n.dot(r.d));
      // Ray from outside going in?
@@ -160,7 +174,7 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
 	 // Total internal reflection
     if ((cos2t = 1 - nnt * nnt * (1 - ddn * ddn)) < 0){
          return obj.e + f.mult(radiance(reflRay, depth, Xi));
-    }
+    }   
     
     Vec tdir = (r.d * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
     double a = nt - nc;
@@ -176,6 +190,7 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
     return obj.e + f.mult(depth > 2 ? 
 						(erand48(Xi) < P ? 	radiance(reflRay, depth, Xi) * RP : radiance(Ray(x, tdir), depth, Xi) * TP)
                                     : radiance(reflRay, depth, Xi) * Re + radiance(Ray(x, tdir), depth, Xi) * Tr);
+
 }
 
 
