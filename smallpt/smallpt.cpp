@@ -147,7 +147,7 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
     }
 	
     
-    // Ideal DIFFUSE reflection
+    // 理想漫反射表面 
     if (obj.refl == DIFF){
         double r1 = 2 * M_PI * erand48(Xi);//随机角度 
 		double r2 = erand48(Xi);
@@ -159,13 +159,13 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
         return obj.e + f.mult(radiance(Ray(x, d), depth, Xi));
     }
   
-	// Ideal SPECULAR reflection
+	// 理想镜面反射表面 
     else if (obj.refl == SPEC){
         return obj.e + f.mult(radiance(Ray(x, r.d - n * 2 * n.dot(r.d)), depth, Xi));
     }
     
     
-    // Ideal dielectric REFRACTION
+    // 理想折射表面 
     Ray reflRay(x, r.d - n * 2 * n.dot(r.d));
      // Ray from outside going in?
     bool into = n.dot(nl) > 0;
