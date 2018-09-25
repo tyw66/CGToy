@@ -1,14 +1,21 @@
+/**
+* 
+*
+*
+*/
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 //#define M_PI 3.1415
 
+//产生0-1随机数 
 double erand48(unsigned short xsubi[3]) {
     return (double)rand() / (double)RAND_MAX;
 }
 
- // Usage: time ./smallpt 5000 && xv image.ppm
+//向量 
 struct Vec{
     double x, y, z; // position, also color (r,g,b)
     Vec(double x_ = 0, double y_ = 0, double z_ = 0){
@@ -44,16 +51,20 @@ struct Vec{
     }
 };
 
+//射线 
 struct Ray{
     Vec o, d;
     Ray(Vec o_, Vec d_) : o(o_), d(d_) {}
 };
+
+//表面类型 
 enum Refl_t{
     DIFF,
     SPEC,
     REFR
 }; // material types, used in radiance()
 
+//球体 
 struct Sphere{
     double rad;  // radius
     Vec p, e, c; // position, emission, color
@@ -109,47 +120,77 @@ inline bool intersect(const Ray &r, double &t, int &id){
 }
 
 Vec radiance(const Ray &r, int depth, unsigned short *Xi){
-    // distance to intersection
-    double t;
-     // id of intersected object
-    int id = 0;
+    //相交性检测 交点距离与相交对象 
+    double t;	// distance to intersection    
+    int id = 0; 	// id of intersected object
     if (!intersect(r, t, id)){
         return Vec();                  // if miss, return black
     }
     const Sphere &obj = spheres[id]; // the hit object
-    Vec x = r.o + r.d * t, n = (x - obj.p).norm(), nl = n.dot(r.d) < 0 ? n : n * -1, f = obj.c;
+    
+    
+    Vec x = r.o + r.d * t;
+	//交点处法向量 
+	Vec n = (x - obj.p).norm();
+	//法向量与光线方向向量夹角判断，determine if it is entering or exiting glass to ray. 
+	Vec nl = n.dot(r.d) < 0 ? n : n * -1;
+	//相交物体颜色 
+	Vec f = obj.c;
+	//颜色的最大分量 
     double p = f.x > f.y && f.x > f.z ? f.x : f.y > f.z ? f.y : f.z; // max refl
+    //Russian Roulette:Stop the recursion randomly based on the surface reflectivity.
     if (++depth > 5){
-        if (erand48(Xi) < p)
-            f = f * (1 / p);
-        else
-            return obj.e; //R.R.
+    	if (erand48(Xi) < p)
+			f = f * (1 / p);
+		else 
+			return obj.e; //R.R.	
     }
-    if (obj.refl == DIFF){ // Ideal DIFFUSE reflection
-        double r1 = 2 * M_PI * erand48(Xi), r2 = erand48(Xi), r2s = sqrt(r2);
-        Vec w = nl, u = ((fabs(w.x) > .1 ? Vec(0, 1) : Vec(1)) % w).norm(), v = w % u;
+	
+    
+    // 理想漫反射表面 
+    if (obj.refl == DIFF){
+        double r1 = 2 * M_PI * erand48(Xi);//随机角度 
+		double r2 = erand48(Xi);
+		double r2s = sqrt(r2);//random distance from center  
+        Vec w = nl;
+		Vec u = ((fabs(w.x) > 0.1 ? Vec(0, 1) : Vec(1)) % w).norm();
+		Vec v = w % u;
         Vec d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
         return obj.e + f.mult(radiance(Ray(x, d), depth, Xi));
     }
-    else if (obj.refl == SPEC){ // Ideal SPECULAR reflection
+  
+	// 理想镜面反射表面 
+    else if (obj.refl == SPEC){
         return obj.e + f.mult(radiance(Ray(x, r.d - n * 2 * n.dot(r.d)), depth, Xi));
     }
-
-    // Ideal dielectric REFRACTION
+    
+    
+    // 理想折射表面 
     Ray reflRay(x, r.d - n * 2 * n.dot(r.d));
      // Ray from outside going in?
     bool into = n.dot(nl) > 0;
-    double nc = 1, nt = 1.5, nnt = into ? nc / nt : nt / nc, ddn = r.d.dot(nl), cos2t;
-    if ((cos2t = 1 - nnt * nnt * (1 - ddn * ddn)) < 0) // Total internal reflection
-        return obj.e + f.mult(radiance(reflRay, depth, Xi));
-
+    double nc = 1, nt = 1.5;
+	double nnt = into ? nc / nt : nt / nc, ddn = r.d.dot(nl), cos2t;
+	 // Total internal reflection
+    if ((cos2t = 1 - nnt * nnt * (1 - ddn * ddn)) < 0){
+         return obj.e + f.mult(radiance(reflRay, depth, Xi));
+    }   
+    
     Vec tdir = (r.d * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
-    double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(n));
-    double Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re, P = .25 + .5 * Re, RP = Re / P, TP = Tr / (1 - P);
-    return obj.e + f.mult(depth > 2 ? (erand48(Xi) < P ? // Russian roulette
-                                                         radiance(reflRay, depth, Xi) * RP
-                                                       : radiance(Ray(x, tdir), depth, Xi) * TP)
+    double a = nt - nc;
+	double b = nt + nc;
+	double R0 = a * a / (b * b);
+	double c = 1 - (into ? -ddn : tdir.dot(n));
+    double Re = R0 + (1 - R0) * c * c * c * c * c;
+	double Tr = 1 - Re;
+	double P = .25 + .5 * Re;
+	double RP = Re / P;
+	double TP = Tr / (1 - P);
+	// Russian roulette
+    return obj.e + f.mult(depth > 2 ? 
+						(erand48(Xi) < P ? 	radiance(reflRay, depth, Xi) * RP : radiance(Ray(x, tdir), depth, Xi) * TP)
                                     : radiance(reflRay, depth, Xi) * Re + radiance(Ray(x, tdir), depth, Xi) * Tr);
+
 }
 
 
@@ -170,7 +211,7 @@ int main(int argc, char *argv[]){
     // 行循环
     for (int y = 0; y < h; y++){
         //进度输出
-        fprintf(stderr, "\rRendering (%d spp) %5.2f%%", samps * 4, 100. * y / (h - 1));
+        printf("\rRendering (%d spp) %5.2f%%", samps * 4, 100. * y / (h - 1));
         //
         unsigned short Xi[3] = {0, 0, y * y * y};
         // 列循环
@@ -189,10 +230,10 @@ int main(int argc, char *argv[]){
                         double r1 = 2 * erand48(Xi), dx = r1 < 1 ? sqrt(r1) - 1 : 1 - sqrt(2 - r1);
                         double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
                         Vec d = cx * (((sx + 0.5 + dx) / 2 + x) / w - 0.5) + cy * (((sy + 0.5 + dy) / 2 + y) / h - 0.5) + cam.d;
-                        //追踪subpixel颜色
+                        //追踪subpixel颜色，
                         r = r + radiance(Ray(cam.o + d * 140, d.norm()), 0, Xi) * (1.0 / samps);
                     }
-                    //各subpixel的颜色混合
+                    //各subpixel的颜色混合,各占0.25 
                     c[i] = c[i] + Vec(clamp(r.x), clamp(r.y), clamp(r.z)) * 0.25;
                 }
             }
