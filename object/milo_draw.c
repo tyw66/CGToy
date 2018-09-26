@@ -17,8 +17,9 @@ int f(int px, int py){
 
 /*milo的命令行画图框架*/
 int main(){
-	for(int y = 0; y<HEIGHT; ++y){
-		for(int x = 0; x< WIDTH; ++x){
+	int x,y;
+	for(y = 0; y<HEIGHT; ++y){
+		for(x = 0; x< WIDTH; ++x){
 			printf(f(x,y)? "*":" ");
 		}		
 		printf("\r\n");
