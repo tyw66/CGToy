@@ -15,15 +15,13 @@ public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
 
-private slots:
-    void on_pushButton_clicked();
+    void display();
 
-    void on_pushButton_2_clicked();
 
 private:
     Ui::Dialog *ui;
     QImage* image;
-    int time;
+    int m_time;
 
     const int W = 256;
     const int H = 256;

@@ -3,6 +3,8 @@
  * @author tyw
  * @date 2018/09/25
  ****************************************/
+#ifndef COLOR3_H
+#define COLOR3_H
 class Color3
 {
 public:
@@ -57,6 +59,8 @@ public:
 
 typedef struct Color3 Color;
 
+
+#endif
 
 /*
 Color red = {255,0,0};

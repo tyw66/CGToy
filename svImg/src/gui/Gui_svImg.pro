@@ -4,27 +4,27 @@
 
 TEMPLATE = app
 
-DEPENDPATH += .
-INCLUDEPATH += .
+DEPENDPATH += ../
+INCLUDEPATH += ../
+INCLUDEPATH += ../../../common/
 
 QMAKE_CXXFLAGS +=  -std=c++11
 
 TARGET =
-DESTDIR = $$PWD/bin
+DESTDIR = $$PWD/../bin
 
-
+FORMS += \
+    dialog.ui
 
 HEADERS += \
-    src/shader.h \
-    src/intersect.h \
-    ../common/svpng.inc \
-    ../common/color.h \
-    ../common/vec.h
+    dialog.h \
+    ../shader.h \
+    ../intersect.h
 
 SOURCES += \
-    src/shader.cpp \
-    src/main.cpp \
-    src/intersect.cpp
-
+    GuiMain.cpp \
+    dialog.cpp \
+    ../shader.cpp \
+    ../intersect.cpp
 
 

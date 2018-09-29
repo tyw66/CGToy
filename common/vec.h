@@ -3,6 +3,10 @@
  * @author tyw
  * @date 2018/09/26
  ****************************************/
+#ifndef VEC3_H
+#define VEC3_H
+
+
 #include<math.h>
 class Vec3{
 public:
@@ -122,5 +126,5 @@ inline float distance(const Vec3 &a,const Vec3 &b){
 //提供一个全局零向量
 extern const Vec3 kZeroVector;
 
-
+#endif
 

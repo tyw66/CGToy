@@ -1,7 +1,9 @@
 #include "intersect.h"
 #include <cmath>
 
-bool inShape(double x, double y, Shape shape, bool flag){
+#include "shape.h"
+
+bool inShape(double x, double y, ShapeType shape, bool flag){
     //！定义坐标系
     //! XY轴坐标长度
     const double xLength = 200.0;
@@ -14,7 +16,7 @@ bool inShape(double x, double y, Shape shape, bool flag){
     switch(shape){
         case Circle:
         {
-            //! (椭)圆：x^2+y^2-r^2<0
+
             const double r = 100.0;
             const double a = 1.0;
             const double b = 1.0;
@@ -50,4 +52,23 @@ bool inShape(double x, double y, Shape shape, bool flag){
 
     return false;
 
+}
+
+
+bool inCircle(double x, double y, double ox, double oy, double r, double a, double b, bool flag)
+{
+    if(flag)
+        return  fabs(sqrt(x * x / (a*a) + y * y / (b*b) - r) - r) < 10;
+    else
+        return  x * x / (a*a) + y * y / (b*b) - r * r < 0;
+}
+
+
+
+bool inParabola(double x, double y, double a, double b, double c, bool flag)
+{
+    if(flag)
+        return  fabs(a * x * x + b * x + c - y) < 10;
+    else
+        return   a * x * x + b * x + c - y > 0;
 }
