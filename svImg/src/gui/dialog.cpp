@@ -5,7 +5,7 @@
 #include<QRgb>
 #include<QTime>
 
-#include "shader.h"
+#include "case.h"
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -40,9 +40,9 @@ void Dialog::display()
         for(int i = 0; i < H; ++i){
             for(int j = 0; j < W; ++j){
                 //获取颜色
-                Color c = shader003((double)i/H, (double)j/W, m_time);
+                Color c = case002((double)j/W, (double)i/H, m_time);
                 //设置颜色
-                image->setPixel(i,j,QColor::fromRgb((int)c.r, (int)c.g, (int)c.b).rgb());
+                image->setPixel(j,i,QColor::fromRgb((int)c.r, (int)c.g, (int)c.b).rgb());
             }
         }
         ui->label->setPixmap(QPixmap::fromImage(*image));

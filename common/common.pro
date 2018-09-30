@@ -9,4 +9,5 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += color.h vec.h \
-    shape.h
+    shape.h \
+    muti_shape.h

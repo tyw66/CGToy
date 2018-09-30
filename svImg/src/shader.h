@@ -21,7 +21,5 @@ Color3 shader01(double x, double y, int time = 0);
 Color3 shader02(double x, double y, int time = 1);
 
 
-Color shader003(double x, double y, int time = 1);
-
 
 #endif // SHADER_H

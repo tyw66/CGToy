@@ -22,6 +22,20 @@ public:
     //! 填充颜色，边界颜色
     Color color_fill, color_border;
 
+    //! 构造函数
+    Shape(){ xPos = 0; yPos = 0; color_fill = Color(0,0,0); }
+    Shape(double x, double y, Color color):xPos(x),yPos(y),color_fill(color){}
+
+    //! 颜色
+    Color getColor(){
+        return color_fill;
+    }
+
+    void setColor(const Color& c){
+        color_fill = c;
+    }
+
+
     //! 图形面积
     virtual double getArea(){
         return 0;
@@ -36,6 +50,7 @@ public:
         return sqrt(x * x + y * y);
     }
 
+
 };
 
 //! 圆
@@ -43,6 +58,11 @@ class Circle : public Shape
 {
 public:
     double r;             /**< 半径*/
+
+    //! 构造函数
+    Circle(){r = 1;}
+
+    Circle(double x, double y, Color c, double r_) : Shape(x, y, c){r = r_;}
 
     double getArea(){
         return PI * r *r;
@@ -64,6 +84,12 @@ class Ellipse : public Shape
 public:
     double a, b;        /**< 椭圆因子*/
 
+    //! 构造函数
+    Ellipse(){a = b = 1;}
+
+    Ellipse(double x, double y, Color c, double a_, double b_) : Shape(x, y, c){a = a_; b = b_;}
+
+
     double getArea(){
         return PI * a *b;
     }
@@ -73,6 +99,8 @@ public:
         return  (x - xPos) *  (x - xPos) / (a * a) + (y - yPos) * (y - yPos) / (b * b) - 1 < 0;
     }
 };
+
+
 
 }
 
