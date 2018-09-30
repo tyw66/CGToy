@@ -19,7 +19,7 @@ Dialog::Dialog(QWidget *parent) :
 
     setWindowFlags(Qt::WindowCloseButtonHint);
     setAttribute(Qt::WA_DeleteOnClose);
-    setGeometry(0,0,W,H);
+    setGeometry(100,100,W,H);
 
 
 }

@@ -33,6 +33,41 @@ public:
 
 };
 
+//!
+class BendEye
+{
+public:
+    tyw::Circle up, down, left, right;
+    tyw::Fan mask;
+
+    //! 构造函数
+    BendEye(tyw::Circle up_, tyw::Circle down_, tyw::Circle left_, tyw::Circle right_, tyw::Fan mask_)
+        :up(up_),down(down_),left(left_),right(right_),mask(mask_){}
+
+    bool isContain(double x, double y){
+        if(up.isContain(x,y) && !down.isContain(x, y)){
+            if(mask.isContain(x, y) || left.isContain(x,y) || right.isContain(x,y)){
+                return true;
+//
+            }
+        }
+        return false;
+    }
+
+};
+
+//! 胶囊
+class Capsule{
+public:
+    tyw::Rect rect;
+    tyw::Circle left,right;
+
+    Capsule(tyw::Rect r, tyw::Circle left_, tyw::Circle right_):rect(r),left(left_),right(right_){}
+
+    bool isContain(double x, double y){
+        return rect.isContain(x,y) || left.isContain(x, y) || right.isContain(x, y);
+    }
+};
 
 
 #endif // MUTI_SHAPE_H

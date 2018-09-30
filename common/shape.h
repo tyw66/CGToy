@@ -100,6 +100,54 @@ public:
     }
 };
 
+//! 扇形
+class Fan : public Circle
+{
+public:
+    double start, end;        /**< 起始、终止角度*/
+
+    //! 构造函数
+    Fan(){start = 0; end = 2 * PI;}
+
+    Fan(double x, double y, Color c, double r, double start_, double end_) : Circle(x, y, c, r){start = start_; end = end_;}
+
+
+    double getArea(){
+        return PI * r *r * (end - start)/(2*PI);
+    }
+
+
+    bool isContain(double x, double y){
+        if( (x - xPos) * (x - xPos) + (y - yPos) * (y - yPos) - r * r > 0){
+            return false;
+        }
+
+        //! 不对 啊
+        if( acos(x / r) > start && acos(x / r) < end && asin(y/r) > start && asin(y/r) > end){
+            return true;
+        }
+        return false;
+    }
+};
+
+
+//! 矩形
+class Rect : public Shape{
+public:
+    double x,y,width,height;
+
+    Rect(){}
+
+    Rect(double x, double y, Color c, double width_, double height_):Shape(x, y, c)
+      ,width(width_),height(height_)
+    {}
+
+    bool isContain(double x, double y){
+        return x > xPos && x < xPos + width && y > yPos && y < yPos +height;
+    }
+
+};
+
 
 
 }
