@@ -6,8 +6,11 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
+//#include<iostream>
 #include <math.h>
 #include "color.h"
+#include "vec.h"
+
 
 #define PI 3.1415926
 namespace tyw {
@@ -53,6 +56,23 @@ public:
 
 };
 
+//! 三角形
+class Triangle2D : public Shape
+{
+public:
+    Vec3 vertexA, vertexB, vertexC; /**< 三个顶点*/
+
+    Triangle2D(){}
+    Triangle2D(double x, double y, Color c, Vec3 v1, Vec3 v2, Vec3 v3) : Shape(x, y, c)
+        {vertexA = v1; vertexB = v2; vertexC = v3;}
+
+    bool isContain(double x, double y){
+       return true;
+    }
+
+};
+
+
 //! 圆
 class Circle : public Shape
 {
@@ -62,7 +82,8 @@ public:
     //! 构造函数
     Circle(){r = 1;}
 
-    Circle(double x, double y, Color c, double r_) : Shape(x, y, c){r = r_;}
+    Circle(double x, double y, Color c, double r_) : Shape(x, y, c)
+        ,r(r_){}
 
     double getArea(){
         return PI * r *r;
@@ -148,6 +169,25 @@ public:
 
 };
 
+//! 心形线
+//! x^2+(y-x^(2/3))^2=1
+class Heart : public Shape{
+public:
+    double size;
+
+    Heart(){}
+    Heart(double x, double y, Color c, double size_) : Shape(x, y, c)
+      ,size(size_){}
+
+    bool isContain(double x, double y){
+        double n = -(y-yPos) - pow((x-xPos),2.0/3);
+        return  x*x + n * n -size < 0;
+//        return size*(1-sin(theta)) < r;
+
+    }
+
+
+};
 
 
 }

@@ -1,7 +1,8 @@
 #include "shape.h"
 #include "muti_shape.h"
+#include <math.h>
 
-bool transPoint(double x0, double y0, double &x1, double &y1)
+bool transPointXY(double x0, double y0, double &x1, double &y1)
 {
     //! XY轴坐标长度
     const double xLength = 200.0;
@@ -12,6 +13,15 @@ bool transPoint(double x0, double y0, double &x1, double &y1)
 
     return true;
 }
+bool transPointRTheta(double x, double y, double &r, double &theta)
+{
+    double x1,y1;
+    transPointXY(x,y,x1,y1);
+
+    theta = atan(y1/x1);
+    double r_ = sqrt(x1*x1+y1*y1);
+    r = r_*200.0;//映射
+}
 
 Color case000(double x, double y, double mx, double my, int time)
 {
@@ -19,16 +29,23 @@ Color case000(double x, double y, double mx, double my, int time)
 
     //! 坐标转换
     double xPos, yPos;
-    transPoint(x,y,xPos,yPos);
-    double xCircle,yCircle;//圆心
-    transPoint(mx,my,xCircle,yCircle);
+    transPointXY(x,y,xPos,yPos);
+    double xCenter,yCenter;//圆心
+    transPointXY(mx,my,xCenter,yCenter);
 
-//    double r = 30;
+    //圆
     double r = 30+10*sin(time/2);//半径随时间变化
-    tyw::Circle circle(xCircle,yCircle,Color(255,0,0),r);
+    tyw::Circle circle(xCenter,yCenter,Color(255,0,0),r);
     if(circle.isContain(xPos,yPos)){
         return circle.getColor();
     }
+
+    //心形
+    //    double size = 100+5*sin(time/2);//半径随时间变化
+    //    tyw::Heart heart(xCenter,yCenter,Color(255,0,0),size);
+    //    if(heart.isContain(xPos,yPos)){
+    //        return heart.getColor();
+    //    }
     return color;
 }
 
@@ -40,7 +57,7 @@ Color case001(double x, double y, double mx, double my, int time = 0)
 
     //! 坐标转换
     double xPos, yPos;
-    transPoint(x,y,xPos,yPos);
+    transPointXY(x,y,xPos,yPos);
 
     //! 加入对象构建场景
     tyw::Circle circle001;
@@ -153,14 +170,14 @@ Color case002(double x, double y, double mx, double my, int time = 0)
     }
 
     //左眼珠（变化范围 -80~-30）
-//    tyw::Circle ball1(-79,-37, Color(20,20,20), 8);//无动画
+    //    tyw::Circle ball1(-79,-37, Color(20,20,20), 8);//无动画
     tyw::Circle ball1(-80+t*50,-37, Color(20,20,20), 8);
     if(ball1.isContain(xPos, yPos)){
         color.set(ball1.color_fill.r,ball1.color_fill.g,ball1.color_fill.b);
     }
 
     //右眼珠（变化范围 30~80）
-//    tyw::Circle ball2(31,-37, Color(20,20,20), 8);//无动画
+    //    tyw::Circle ball2(31,-37, Color(20,20,20), 8);//无动画
     tyw::Circle ball2(30+t*50,-37, Color(20,20,20), 8);
     if(ball2.isContain(xPos, yPos)){
         color.set(ball2.color_fill.r,ball1.color_fill.g,ball1.color_fill.b);
@@ -170,3 +187,14 @@ Color case002(double x, double y, double mx, double my, int time = 0)
 }
 
 
+Color case003(double x, double y, double mx, double my, int time)
+{
+    //! 背景色
+    Color color(225,225,225);
+
+
+
+
+
+    return color;
+}
