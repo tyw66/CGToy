@@ -11,23 +11,18 @@ INCLUDEPATH += ../../../common/
 
 QMAKE_CXXFLAGS +=  -std=c++11
 
-TARGET = demo
-DESTDIR = $$PWD/../../bin
+#TARGET = demo
 
 FORMS += \
-    dialog.ui
+    $$PWD/dialog.ui
 
 HEADERS += \
-    dialog.h \
-    ../shader.h \
-    ../intersect.h \
-    ../case.h
+    $$PWD/dialog.h
 
 SOURCES += \
-    dialog.cpp \
-    ../shader.cpp \
-    ../intersect.cpp \
-    guiMain.cpp \
-    ../case.cpp
+    $$PWD/guiMain.cpp \
+    $$PWD/dialog.cpp
+
+
 
 

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "../common/svpng.inc"
-#include "shader.h"
+#include "./shader/shader.h"
 
 //! 图像大小
 const double PI = 3.141592;

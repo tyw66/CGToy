@@ -7,7 +7,9 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
-# Input
-HEADERS += color.h vec.h \
-    shape.h \
-    muti_shape.h
+HEADERS += \
+    $$PWD/vec.h \
+    $$PWD/shape.h \
+    $$PWD/muti_shape.h \
+    $$PWD/color.h
+
