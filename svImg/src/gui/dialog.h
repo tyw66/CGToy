@@ -48,8 +48,8 @@ private:
     QTime m_timer;                  //动画用
     QTime  temp_timer;          //测试用
 
-    const int W = 256;
-    const int H = 256;
+    const int W = 512;
+    const int H = 512;
 
 
 };

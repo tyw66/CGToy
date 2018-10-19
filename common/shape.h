@@ -44,7 +44,7 @@ public:
         return 0;
     }
     //! 一个点是否在形状内部
-    virtual bool isContain(double x, double y){
+    virtual bool isContain(){
         return false;
     }
 
@@ -93,8 +93,8 @@ public:
         return (x - xPos) * (x - xPos) + (y - yPos) * (y - yPos) - r * r < 0;
     }
 
-    double getSDF(double x, double y){
-        return  sqrt(x * x  + y * y) - r;
+    double getSDF(const double x, const double y){
+        return  sqrt((x - xPos) * (x - xPos)  + (y - yPos) * (y - yPos)) - r;
     }
 
 };
