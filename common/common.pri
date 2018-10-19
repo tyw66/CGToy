@@ -11,5 +11,9 @@ HEADERS += \
     $$PWD/vec.h \
     $$PWD/shape.h \
     $$PWD/muti_shape.h \
-    $$PWD/color.h
+    $$PWD/color.h \
+    $$PWD/util.h
+
+SOURCES += \
+    $$PWD/util.cpp
 

@@ -2,33 +2,7 @@
 #include "stdlib.h"
 #include <iostream>
 
-void transPointXY(double x0, double y0, double& x1, double& y1)
-{
-    //! XY轴坐标长度
-    const double xLength = 200.0;
-    const double yLength = 200.0;
-    //! 当前像素点映射到坐标轴上
-    x1 = x0 * xLength - xLength/2;//减去Length/2是把坐标中心从图像屏幕左上方移动到中心
-    y1 = y0 * yLength - yLength/2;
-
-    //    rotatePointXY(x1,y1,x1,y1,6.28*30/180.0);
-}
-void rotatePointXY(double x0, double y0, double& x1, double& y1, double angle)
-{
-    double a = 6.28 * angle / 180;
-    x1 = x0 *cos(a) + y0 *sin(a);
-    y1 = -x0 *sin(a) + y0 * cos(a);
-}
-
-void transPointRTheta(double x, double y, double &r, double &theta)
-{
-    double x1,y1;
-    transPointXY(x,y,x1,y1);
-
-    theta = atan(y1/x1);
-    double r_ = sqrt(x1*x1+y1*y1);
-    r = r_*200.0;//映射
-}
+#include "util.h"
 
 Color case000(double x, double y, double mx, double my, int time)
 {
@@ -36,9 +10,9 @@ Color case000(double x, double y, double mx, double my, int time)
 
     //! 坐标转换
     double xPos, yPos;
-    transPointXY(x,y,xPos,yPos);
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
     double xCenter,yCenter;//圆心
-    transPointXY(mx,my,xCenter,yCenter);
+    Util::scalePointXY(mx,my,xCenter,yCenter,200,200);
 
     //圆
     double r = 30+10*sin(time/2);//半径随时间变化
@@ -64,7 +38,8 @@ Color case001(double x, double y, double mx, double my, int time)
 
     //! 坐标转换
     double xPos, yPos;
-    transPointXY(x,y,xPos,yPos);
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
 
     //! 加入对象构建场景
     tyw::Circle circle001;
@@ -114,12 +89,12 @@ Color case002(double x, double y, double mx, double my, int time)
     Color color(225,225,225);
 
     //! 定义坐标系
-    double xPos_t, yPos_t;
-    transPointXY(x,y,xPos_t,yPos_t);
-
     double xPos, yPos;
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
+
     double angle = my * 60.0 - 30;
-    rotatePointXY(xPos_t, yPos_t,xPos, yPos, angle);
+    Util::rotatePointXY(xPos, yPos,xPos, yPos, angle, 0, 0);
 
     //! 加入对象构建场景
     //脸
@@ -171,7 +146,7 @@ Color case002(double x, double y, double mx, double my, int time)
     tyw::Rect rect2(30,-45,Color(255, 255, 255),50,16);
     tyw::Circle cLeft2(80,-37, Color(20, 20, 20), 8);
     tyw::Circle cRight2(30,-37, Color(20,20,20), 8);
-    Capsule eye2(rect2, cLeft2,cRight2);
+    Capsule eye2(rect2, cLeft2, cRight2);
     if(eye2.isContain(xPos, yPos)){
         color.set(rect2.color_fill.r,rect1.color_fill.g,rect1.color_fill.b);
     }
@@ -203,17 +178,16 @@ Color case003(double x, double y, double mx, double my, int time)
 
     //! 坐标变换
     double xPos, yPos;
-    transPointXY(x, y, xPos, yPos);
-
-    double xPos_t, yPos_t;
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
 
     //左眼睛
     tyw::Rect rect1(-80,-45,Color(255, 255, 255),50,16);
     tyw::Circle cLeft(-80,-37, Color(20, 20, 20), 8);
     tyw::Circle cRight(-30,-37, Color(20,20,20), 8);
     Capsule eye1(rect1, cLeft,cRight);
-    rotatePointXY(xPos, yPos, xPos_t, yPos_t,30);
-    if(eye1.isContain(xPos_t, yPos_t)){
+    Util::rotatePointXY(xPos, yPos, xPos, yPos,mx *360,-100,0);
+    if(eye1.isContain(xPos, yPos)){
         color.set(rect1.color_fill.r,rect1.color_fill.g,rect1.color_fill.b);
     }
 
@@ -230,9 +204,11 @@ Color case004(double x, double y, double mx, double my, int time)
 
     //! 坐标转换
     double xPos, yPos;
-    transPointXY(x,y,xPos,yPos);
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
     double xCenter,yCenter;//圆心
-    transPointXY(mx,my,xCenter,yCenter);
+    Util::scalePointXY(mx,my,xCenter,yCenter,200,200);
+    Util::movePointXY(xCenter, yCenter, xCenter, yCenter, 100, 100);
 
     //! 光源
     double r = 20;
