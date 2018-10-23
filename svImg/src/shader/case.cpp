@@ -214,13 +214,13 @@ Color case004(double x, double y, double mx, double my, int time)
     double r = 20;
     tyw::Circle lightSource(0,0,Color(255,0,0),r);
 
-    //! 物体
-    double ri = 30;
-    tyw::Circle item(xCenter,yCenter,Color(255,0,0),ri);
+//    //! 物体
+//    double ri = 30;
+//    tyw::Circle item(xCenter,yCenter,Color(255,0,0),ri);
 
-    if(item.isContain(xPos,yPos)){
-        return item.getColor();
-    }
+//    if(item.isContain(xPos,yPos)){
+//        return item.getColor();
+//    }
 
     //! 不用积分
     //    double sdf = lightSource.getSDF(xPos,yPos) ;
@@ -228,6 +228,7 @@ Color case004(double x, double y, double mx, double my, int time)
 
     //!  用MC积分计算当前像素点处的光线强度
     const int N = 8;
+
     for(int i = 0; i < N; ++i){
         //        double a = 6.28 *i / N; //分层采样
         //        double a =  6.28*  rand()/RAND_MAX;//均匀采样

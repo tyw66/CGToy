@@ -35,21 +35,21 @@ Dialog::~Dialog()
 
 void Dialog::render(int x, int y)
 {
-//    temp_timer.restart();
-
+    temp_timer.restart();
+    #pragma omp parallel for
     //遍历像素点
     for(int i = 0; i < H; ++i){
         for(int j = 0; j < W; ++j){
             //获取颜色
-            Color color = case003((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
+            Color color = case002((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
             //设置颜色
             m_image->setPixel(j,i,QColor::fromRgb((int)color.r, (int)color.g, (int)color.b).rgb());
         }
     }
     update();
-//    m_time++;
+    //    m_time++;
 
-//    qDebug()<< temp_timer.elapsed();
+    qDebug()<< temp_timer.elapsed();
 }
 
 void Dialog::mouseMoveEvent(QMouseEvent *ev)

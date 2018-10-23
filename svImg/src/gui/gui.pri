@@ -10,6 +10,9 @@ INCLUDEPATH += ../
 INCLUDEPATH += ../../../common/
 
 QMAKE_CXXFLAGS +=  -std=c++11
+QMAKE_CXXFLAGS += -fopenmp
+
+LIBS += -lgomp -lpthread
 
 #TARGET = demo
 
