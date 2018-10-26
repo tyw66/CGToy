@@ -14,8 +14,6 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-    connect(ui->pushButton_paint, SIGNAL(clicked()), this,SLOT(onPlay()));
-    ui->pushButton_paint->setVisible(false);
     setWindowFlags(Qt::WindowCloseButtonHint);
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumSize(W,H);
@@ -24,7 +22,7 @@ Dialog::Dialog(QWidget *parent) :
 
     m_image = new QImage(W,H,QImage::Format_RGB32);
 
-    render(W/2,H/2);
+    renderImg(W/2,H/2);
 
 }
 
@@ -33,7 +31,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::render(int x, int y)
+void Dialog::renderImg(int x, int y)
 {
     temp_timer.restart();
     #pragma omp parallel for
@@ -57,7 +55,7 @@ void Dialog::mouseMoveEvent(QMouseEvent *ev)
     mouse_posX = ev->x();
     mouse_posY = ev->y();
 
-    render(mouse_posX, mouse_posY);
+    renderImg(mouse_posX, mouse_posY);
 }
 
 void Dialog::paintEvent(QPaintEvent *ev)
@@ -73,7 +71,7 @@ void Dialog::onPlay()
 {
     while(true){
         m_timer.restart();
-        render(mouse_posX, mouse_posY);
+        renderImg(mouse_posX, mouse_posY);
 
         //0.1s刷新一次，并防止卡死
         while(m_timer.elapsed() < 100){

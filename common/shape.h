@@ -63,8 +63,11 @@ public:
     Vec3 va, vb, vc; /**< 三个顶点*/
 
     Triangle2D(){}
-    Triangle2D(double x, double y, const Color& c, const Vec3& v1,const Vec3& v2) : Shape(x, y, c)
-    {va = v1; vb = v2; vc.x = x; vc.y = y;}
+    Triangle2D(const Vec3& v1,const Vec3& v2,const Vec3& v3,const Color& c){
+        va = v1; vb = v2; vc = v3;
+        xPos = (v1.x+v2.x+v3.y)/3; yPos = (v1.y+v2.y+v3.y)/3;
+        color_fill = c;
+    }
 
     bool isContain(double x, double y){
         //叉乘判断法

@@ -26,7 +26,7 @@ public:
      * @param x 鼠标位置
      * @param y
      */
-    void render(int x = 0, int y = 0);
+    void renderImg(int x = 0, int y = 0);
 
 public slots:
     void onPlay();

@@ -184,13 +184,18 @@ Color case003(double x, double y, double mx, double my, int time)
     Util::scalePointXY(mx,my,xMouse,yMouse,200,200);
     Util::movePointXY(xMouse, yMouse, xMouse, yMouse, 100, 100);
 
-
+    //画两个三角形
+    Vec3 vtMouse(xMouse,yMouse,0);
     Vec3 vt1(-60,0,0);
     Vec3 vt2(60,0,0);
-    tyw::Triangle2D triangle(xMouse,yMouse,Color(255,0,0),vt1,vt2);
+    tyw::Triangle2D triangle(vt1,vt2,vtMouse,Color(255,125,0));
+    tyw::Triangle2D triangle2(vt1,vt2,-vtMouse,Color(255,255,0));
 
     if(triangle.isContain(xPos,yPos)){
         return triangle.color_fill;
+    }
+    else if(triangle2.isContain(xPos,yPos)){
+         return triangle2.color_fill;
     }
 
     return color;
@@ -254,3 +259,8 @@ double trace(double x, double y, double dx, double dy, tyw::Circle &circle)
     return 0;
 }
 
+
+Color case005(double x, double y, double mx, double my, int time)
+{
+
+}
