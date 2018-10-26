@@ -180,18 +180,18 @@ Color case003(double x, double y, double mx, double my, int time)
     double xPos, yPos;
     Util::scalePointXY(x,y,xPos,yPos,200,200);
     Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
+    double xMouse, yMouse;//鼠标
+    Util::scalePointXY(mx,my,xMouse,yMouse,200,200);
+    Util::movePointXY(xMouse, yMouse, xMouse, yMouse, 100, 100);
 
-    //左眼睛
-    tyw::Rect rect1(-80,-45,Color(255, 255, 255),50,16);
-    tyw::Circle cLeft(-80,-37, Color(20, 20, 20), 8);
-    tyw::Circle cRight(-30,-37, Color(20,20,20), 8);
-    Capsule eye1(rect1, cLeft,cRight);
-    Util::rotatePointXY(xPos, yPos, xPos, yPos,mx *360,-100,0);
-    if(eye1.isContain(xPos, yPos)){
-        color.set(rect1.color_fill.r,rect1.color_fill.g,rect1.color_fill.b);
+
+    Vec3 vt1(-60,0,0);
+    Vec3 vt2(60,0,0);
+    tyw::Triangle2D triangle(xMouse,yMouse,Color(255,0,0),vt1,vt2);
+
+    if(triangle.isContain(xPos,yPos)){
+        return triangle.color_fill;
     }
-
-
 
     return color;
 }
@@ -214,13 +214,13 @@ Color case004(double x, double y, double mx, double my, int time)
     double r = 20;
     tyw::Circle lightSource(0,0,Color(255,0,0),r);
 
-//    //! 物体
-//    double ri = 30;
-//    tyw::Circle item(xCenter,yCenter,Color(255,0,0),ri);
+    //    //! 物体
+    //    double ri = 30;
+    //    tyw::Circle item(xCenter,yCenter,Color(255,0,0),ri);
 
-//    if(item.isContain(xPos,yPos)){
-//        return item.getColor();
-//    }
+    //    if(item.isContain(xPos,yPos)){
+    //        return item.getColor();
+    //    }
 
     //! 不用积分
     //    double sdf = lightSource.getSDF(xPos,yPos) ;

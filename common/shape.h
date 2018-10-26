@@ -60,14 +60,28 @@ public:
 class Triangle2D : public Shape
 {
 public:
-    Vec3 vertexA, vertexB, vertexC; /**< 三个顶点*/
+    Vec3 va, vb, vc; /**< 三个顶点*/
 
     Triangle2D(){}
-    Triangle2D(double x, double y, Color c, Vec3 v1, Vec3 v2, Vec3 v3) : Shape(x, y, c)
-        {vertexA = v1; vertexB = v2; vertexC = v3;}
+    Triangle2D(double x, double y, const Color& c, const Vec3& v1,const Vec3& v2) : Shape(x, y, c)
+    {va = v1; vb = v2; vc.x = x; vc.y = y;}
 
     bool isContain(double x, double y){
-       return true;
+        //叉乘判断法
+        Vec3 p(x,y,0);
+        Vec3 pa = va - p;
+        Vec3 pb = vb - p;
+        Vec3 pc = vc - p;
+
+        Vec3 t1 = crossProduct(pa, pb);
+        Vec3 t2 = crossProduct(pb, pc);
+        Vec3 t3 = crossProduct(pc, pa);
+
+        //如果t1 t2 t3同向，则点在三角形内
+        double f1 = t1 * t2;
+        double f2 = t1 * t3;
+
+        return f1>0 && f2 >0;
     }
 
 };
@@ -83,7 +97,7 @@ public:
     Circle(){r = 1;}
 
     Circle(double x, double y, Color c, double r_) : Shape(x, y, c)
-        ,r(r_){}
+      ,r(r_){}
 
     double getArea(){
         return PI * r *r;
@@ -182,7 +196,7 @@ public:
     bool isContain(double x, double y){
         double n = -(y-yPos) - pow((x-xPos),2.0/3);
         return  x*x + n * n -size < 0;
-//        return size*(1-sin(theta)) < r;
+        //        return size*(1-sin(theta)) < r;
 
     }
 
