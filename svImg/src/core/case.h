@@ -32,7 +32,10 @@ Color case002(double x, double y, double mx, double my, int time = 0);
  * @brief  画三角形
  */
 Color case003(double x, double y, double mx, double my, int time = 0);
-
+/**
+ * @brief  画三角形
+ */
+int case03(double x, double y, double mx, double my, int time = 0);
 /**
  * @brief  画光
  */

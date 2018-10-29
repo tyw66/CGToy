@@ -6,7 +6,8 @@
 
 Color case000(double x, double y, double mx, double my, int time)
 {
-    Color color(250, 211, 94);    //背景填充
+    //    Color color(250, 211, 94);    //背景填充
+    Color color(0,0,0);    //背景填充
 
     //! 坐标转换
     double xPos, yPos;
@@ -15,7 +16,7 @@ Color case000(double x, double y, double mx, double my, int time)
     Util::scalePointXY(mx,my,xCenter,yCenter,200,200);
 
     //圆
-    double r = 30+10*sin(time/2);//半径随时间变化
+    double r = 30;//+10*sin(time/2);//半径随时间变化
     tyw::Circle circle(xCenter,yCenter,Color(255,0,0),r);
     if(circle.isContain(xPos,yPos)){
         return circle.getColor();
@@ -171,10 +172,10 @@ Color case002(double x, double y, double mx, double my, int time)
 }
 
 
-Color case003(double x, double y, double mx, double my, int time)
+int case03(double x, double y, double mx, double my, int time)
 {
     //! 背景色
-    Color color(225,225,225);
+    int value = 0;
 
     //! 坐标变换
     double xPos, yPos;
@@ -192,13 +193,13 @@ Color case003(double x, double y, double mx, double my, int time)
     tyw::Triangle2D triangle2(vt1,vt2,-vtMouse,Color(255,255,0));
 
     if(triangle.isContain(xPos,yPos)){
-        return triangle.color_fill;
+        value = 4;
     }
-    else if(triangle2.isContain(xPos,yPos)){
-         return triangle2.color_fill;
-    }
+//    else if(triangle2.isContain(xPos,yPos)){
+//        value = 2;
+//    }
 
-    return color;
+    return value;
 }
 
 Color case004(double x, double y, double mx, double my, int time)

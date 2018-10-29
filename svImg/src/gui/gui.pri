@@ -5,14 +5,6 @@ QT += core gui widgets
 
 TEMPLATE = app
 
-DEPENDPATH += ../
-INCLUDEPATH += ../
-INCLUDEPATH += ../../../common/
-
-QMAKE_CXXFLAGS +=  -std=c++11
-QMAKE_CXXFLAGS += -fopenmp
-
-LIBS += -lgomp -lpthread
 
 #TARGET = demo
 
@@ -20,11 +12,11 @@ FORMS += \
     $$PWD/dialog.ui
 
 HEADERS += \
-    $$PWD/dialog.h
+    $$PWD/viewer.h
 
 SOURCES += \
     $$PWD/guiMain.cpp \
-    $$PWD/dialog.cpp
+    $$PWD/viewer.cpp
 
 
 
