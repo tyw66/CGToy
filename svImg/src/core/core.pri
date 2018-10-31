@@ -1,9 +1,9 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/intersect.h \
-    $$PWD/case.h
+    $$PWD/case.h \
+    $$PWD/scene.h
 
 SOURCES += \
-    $$PWD/intersect.cpp \
-    $$PWD/case.cpp
+    $$PWD/case.cpp \
+    $$PWD/scene.cpp

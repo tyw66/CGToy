@@ -31,17 +31,8 @@ Color case000(double x, double y, double mx, double my, int time)
     return color;
 }
 
-
-Color case001(double x, double y, double mx, double my, int time)
+void case001(Scene *scene)
 {
-    //! 背景滑稽黄
-    Color color(250, 211, 94);
-
-    //! 坐标转换
-    double xPos, yPos;
-    Util::scalePointXY(x,y,xPos,yPos,200,200);
-    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
-
     //! 加入对象构建场景
     tyw::Circle circle001;
     circle001.xPos = 50;
@@ -58,8 +49,25 @@ Color case001(double x, double y, double mx, double my, int time)
     circle003.yPos = 0;
     circle003.r = 80;
 
+    scene->add(&circle001);
+    scene->add(&circle002);
+    scene->add(&circle003);
+}
+Color shader001(Scene* scene,double x, double y, double mx, double my, int time)
+{
+    //! 背景滑稽黄
+    Color color(250, 211, 94);
+
+    //! 坐标转换
+    double xPos, yPos;
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
+
     //! 构造实体几何
-    if(circle003.isContain(xPos,yPos) && !circle001.isContain(xPos,yPos) && !circle002.isContain(xPos,yPos)){
+    //    if(circle003.isContain(xPos,yPos) && !circle001.isContain(xPos,yPos) && !circle002.isContain(xPos,yPos)){
+    if(scene->m_objs[2]->isContain(xPos,yPos) &&
+            !scene->m_objs[0]->isContain(xPos,yPos) &&
+            !scene->m_objs[1]->isContain(xPos,yPos)){
         color = Color(255,0,0);
 
         tyw::Circle circle004;
@@ -81,12 +89,12 @@ Color case001(double x, double y, double mx, double my, int time)
 
 
 
-Color case002(double x, double y, double mx, double my, int time)
+Color shader002(double x, double y, double mx, double my, int time)
 {
     //t变化范围：0～1
     double t = sin(time)*0.5+0.5;
 
-    //! 背景色dfe
+    //! 背景色
     Color color(225,225,225);
 
     //! 定义坐标系
@@ -195,9 +203,9 @@ int case03(double x, double y, double mx, double my, int time)
     if(triangle.isContain(xPos,yPos)){
         value = 4;
     }
-//    else if(triangle2.isContain(xPos,yPos)){
-//        value = 2;
-//    }
+    //    else if(triangle2.isContain(xPos,yPos)){
+    //        value = 2;
+    //    }
 
     return value;
 }
@@ -264,4 +272,36 @@ double trace(double x, double y, double dx, double dy, tyw::Circle &circle)
 Color case005(double x, double y, double mx, double my, int time)
 {
 
+}
+
+
+
+Color case006(double x, double y, double mx, double my, int time)
+{
+    //! 背景色
+    int value = 0;
+    Color c(125,125,125);
+
+    //! 坐标变换
+    double xPos, yPos;
+    Util::scalePointXY(x,y,xPos,yPos,200,200);
+    Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
+    double xMouse, yMouse;//鼠标
+    Util::scalePointXY(mx,my,xMouse,yMouse,200,200);
+    Util::movePointXY(xMouse, yMouse, xMouse, yMouse, 100, 100);
+
+    //画三角形
+    Vec3 vtMouse(0,-60,10);
+    Vec3 vt1(-60,0,30);
+    Vec3 vt2(60,0,30);
+    tyw::Triangle2D triangle(vt1,vt2,vtMouse,Color(255,125,0));
+
+
+    double d = 30;//投影面 坐标
+    tyw::Triangle2D projTr = triangle.projectTo2D(d);
+    if(projTr.isContain(xPos,yPos, d)){
+        c.set(255,0,0);
+    }
+
+    return c;
 }

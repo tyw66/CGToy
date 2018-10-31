@@ -44,9 +44,7 @@ public:
         return 0;
     }
     //! 一个点是否在形状内部
-    virtual bool isContain(){
-        return false;
-    }
+    virtual bool isContain(double x, double y) = 0;
 
     //! 一个点到该图形的带符号距离场
     virtual double getSDF(double x, double y){
@@ -69,6 +67,24 @@ public:
         color_fill = c;
     }
 
+    bool isContain(double x, double y, double z){
+        //叉乘判断法
+        Vec3 p(x,y,z);
+        Vec3 pa = va - p;
+        Vec3 pb = vb - p;
+        Vec3 pc = vc - p;
+
+        Vec3 t1 = crossProduct(pa, pb);
+        Vec3 t2 = crossProduct(pb, pc);
+        Vec3 t3 = crossProduct(pc, pa);
+
+        //如果t1 t2 t3同向，则点在三角形内
+        double f1 = t1 * t2;
+        double f2 = t1 * t3;
+
+        return f1>0 && f2 >0;
+    }
+
     bool isContain(double x, double y){
         //叉乘判断法
         Vec3 p(x,y,0);
@@ -85,6 +101,24 @@ public:
         double f2 = t1 * t3;
 
         return f1>0 && f2 >0;
+    }
+
+    Triangle2D projectTo2D(double d){
+        Vec3 pva, pvb, pvc;
+
+        pva.x = va.x * d / va.z;
+        pva.y = va.y * d / va.z;
+        pva.z = d;
+
+        pvb.x = vb.x * d / vb.z;
+        pvb.y = vb.y * d / vb.z;
+        pvb.z = d;
+
+        pvc.x = vc.x * d / vc.z;
+        pvc.y = vc.y * d / vc.z;
+        pvc.z = d;
+
+        return tyw::Triangle2D(pva, pvb, pvc, color_fill);
     }
 
 };
@@ -207,7 +241,10 @@ public:
 };
 
 
+
 }
+
+
 
 
 #endif // SHAPE_H

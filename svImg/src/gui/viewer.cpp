@@ -11,20 +11,26 @@ Viewer::Viewer(QWidget *parent) : QWidget(parent)
     setMouseTracking(true);
 
     m_image = new QImage(W,H,QImage::Format_RGB32);
+    m_scene = new Scene();
+
+//    case001(m_scene);
 
     renderImg(W/2,H/2);
+
+
 
 }
 
 void Viewer::renderImg(int x, int y)
 {
     temp_timer.restart();
+
     #pragma omp parallel for
     //遍历像素点
     for(int i = 0; i < H; ++i){
         for(int j = 0; j < W; ++j){
             //获取颜色
-            Color color = case002((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
+            Color color = case006((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
             //设置颜色
             m_image->setPixel(j,i,QColor::fromRgb((int)color.r, (int)color.g, (int)color.b).rgb());
         }

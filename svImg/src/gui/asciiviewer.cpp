@@ -31,7 +31,7 @@ void AsciiViewer::renderImg(int x, int y)
     for(int i = 0; i < H; i++){
         for(int j = 0; j < W; j++){
             //获取颜色
-            color = case002((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
+            color = shader002((double)j/W, (double)i/H, (double)x/W, (double)y/H, m_time);
             //设置颜色
             int c = color.toLightness() *0.019 - 1;// *5/255 ;
 //            append(items.at(c));

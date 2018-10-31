@@ -10,6 +10,7 @@
 #include "case.h"
 #include "shader.h"
 
+#include "scene.h"
 class Viewer : public QWidget
 {
     Q_OBJECT
@@ -37,10 +38,11 @@ private:
 
     QTime  temp_timer;          //测试用
 
-    const int W = 64;
-    const int H = 64;
+    const int W = 256;
+    const int H = 256;
 
 
+    Scene *m_scene;
 
 };
 

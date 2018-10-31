@@ -6,6 +6,7 @@
 #include "muti_shape.h"
 #include <math.h>
 
+#include "scene.h"
 
 /**
  * @brief 参数图形。位置随鼠标移动,半径随时间变化
@@ -21,12 +22,13 @@ Color case000(double x, double y, double mx, double my, int time = 0);
 /**
  * @brief 图案
  */
-Color case001(double x, double y, double mx, double my, int time = 0);
+void case001(Scene* scene);
+Color shader001(Scene* scene,double x, double y, double mx, double my, int time=0);
 
 /**
  * @brief 滑稽表情
  */
-Color case002(double x, double y, double mx, double my, int time = 0);
+Color shader002(double x, double y, double mx, double my, int time = 0);
 
 /**
  * @brief  画三角形
@@ -47,5 +49,10 @@ double trace(double x, double y, double dx, double dy, tyw::Circle &circle);
  * @brief  画时锺
  */
 Color case005(double x, double y, double mx, double my, int time = 0);
+
+/**
+ * @brief  三维
+ */
+Color case006(double x, double y, double mx, double my, int time = 0);
 
 #endif
