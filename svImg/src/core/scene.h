@@ -11,10 +11,16 @@ public:
 
     std::vector<tyw::Shape *> m_objs; /**< 场景包含的物体*/
 
-    void add(tyw::Shape *obj){
-        m_objs.push_back(obj);
-    }
-
+    /**
+     * @brief sampling
+     * @param x
+     * @param y
+     * @param mx
+     * @param my
+     * @param time
+     * @return
+     */
+    Color& sampling(double x, double y, double mx, double my, int time);
 
 
 };

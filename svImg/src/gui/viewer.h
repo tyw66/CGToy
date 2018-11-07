@@ -32,7 +32,7 @@ protected:
 
 private:
     QImage* m_image;            //帧图像数据
-    static int m_time;              //时间变量，动画用
+    static unsigned int m_time;              //时间变量，动画用
     int mouse_posX, mouse_posY;
 
 

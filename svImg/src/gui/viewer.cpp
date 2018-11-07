@@ -1,7 +1,7 @@
 #include "viewer.h"
 #include <QDebug>
 
-int Viewer::m_time = 0;
+unsigned int Viewer::m_time = 0;
 Viewer::Viewer(QWidget *parent) : QWidget(parent)
 {
     setWindowFlags(Qt::WindowCloseButtonHint);

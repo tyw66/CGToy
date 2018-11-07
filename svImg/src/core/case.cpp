@@ -49,9 +49,9 @@ void case001(Scene *scene)
     circle003.yPos = 0;
     circle003.r = 80;
 
-    scene->add(&circle001);
-    scene->add(&circle002);
-    scene->add(&circle003);
+    scene->m_objs.push_back(&circle001);
+    scene->m_objs.push_back(&circle002);
+    scene->m_objs.push_back(&circle003);
 }
 Color shader001(Scene* scene,double x, double y, double mx, double my, int time)
 {
@@ -292,16 +292,85 @@ Color case006(double x, double y, double mx, double my, int time)
 
     //画三角形
     Vec3 vtMouse(0,-60,10);
-    Vec3 vt1(-60,0,30);
-    Vec3 vt2(60,0,30);
-    tyw::Triangle2D triangle(vt1,vt2,vtMouse,Color(255,125,0));
+
+    Vec3 vt1(-30, -30, 30);
+    Vec3 vt2(-30, 30, -30);
+    Vec3 vt3(30, -30, -30);
+    Vec3 vt4(-30, -30, -30);
+    Vec3 vt5(-30, 30, 30);
+    Vec3 vt6(30, 30, 30);
+    Vec3 vt7(30, 30, -30);
+    Vec3 vt8(-30, 30, -30);
+
+    tyw::Triangle2D triangle1(vt1,vt2,vt3,Color(255,125,0));
+    tyw::Triangle2D triangle2(vt1,vt3,vt4,Color(125,125,0));
+
+    tyw::Triangle2D triangle3(vt2,vt3,vt7,Color(0,125,0));
+    tyw::Triangle2D triangle4(vt2,vt6,vt7,Color(0,125,125));
+
+    tyw::Triangle2D triangle5(vt1,vt2,vt5,Color(255,125,125));
+    tyw::Triangle2D triangle6(vt2,vt5,vt6,Color(255,0,0));
+
+    tyw::Triangle2D triangle7(vt5,vt6,vt7,Color(255,125,255));
+    tyw::Triangle2D triangle8(vt5,vt7,vt8,Color(125,0,0));
+
+    tyw::Triangle2D triangle9(vt3,vt4,vt8,Color(255,125,0));
+    tyw::Triangle2D triangle10(vt3,vt7,vt8,Color(125,125,125));
+
+    tyw::Triangle2D triangle11(vt1,vt4,vt8,Color(255,255,125));
+    tyw::Triangle2D triangle12(vt1,vt5,vt8,Color(125,125,255));
 
 
-    double d = 30;//投影面 坐标
-    tyw::Triangle2D projTr = triangle.projectTo2D(d);
-    if(projTr.isContain(xPos,yPos, d)){
-        c.set(255,0,0);
+
+    double d = 50;//投影面 坐标
+    tyw::Triangle2D projTr1 = triangle1.projectTo2D(d);
+    tyw::Triangle2D projTr2 = triangle2.projectTo2D(d);
+    tyw::Triangle2D projTr3 = triangle3.projectTo2D(d);
+    tyw::Triangle2D projTr4 = triangle4.projectTo2D(d);
+    tyw::Triangle2D projTr5 = triangle5.projectTo2D(d);
+    tyw::Triangle2D projTr6 = triangle6.projectTo2D(d);
+    tyw::Triangle2D projTr7 = triangle7.projectTo2D(d);
+    tyw::Triangle2D projTr8 = triangle8.projectTo2D(d);
+    tyw::Triangle2D projTr9 = triangle9.projectTo2D(d);
+    tyw::Triangle2D projTr10 = triangle10.projectTo2D(d);
+    tyw::Triangle2D projTr11 = triangle11.projectTo2D(d);
+    tyw::Triangle2D projTr12 = triangle12.projectTo2D(d);
+
+    if(projTr1.isContain(xPos,yPos, d)){
+        c = projTr1.color_fill;
     }
-
+    else if(projTr2.isContain(xPos,yPos, d)){
+        c = projTr2.color_fill;
+    }
+    else if(projTr3.isContain(xPos,yPos, d)){
+        c = projTr3.color_fill;
+    }
+    else if(projTr4.isContain(xPos,yPos, d)){
+        c = projTr4.color_fill;
+    }
+    else if(projTr5.isContain(xPos,yPos, d)){
+        c = projTr5.color_fill;
+    }
+    else if(projTr6.isContain(xPos,yPos, d)){
+        c = projTr6.color_fill;
+    }
+    else if(projTr7.isContain(xPos,yPos, d)){
+        c = projTr7.color_fill;
+    }
+    else if(projTr8.isContain(xPos,yPos, d)){
+        c = projTr8.color_fill;
+    }
+    else if(projTr9.isContain(xPos,yPos, d)){
+        c = projTr9.color_fill;
+    }
+    else if(projTr10.isContain(xPos,yPos, d)){
+        c = projTr10.color_fill;
+    }
+    else if(projTr11.isContain(xPos,yPos, d)){
+        c = projTr11.color_fill;
+    }
+    else if(projTr12.isContain(xPos,yPos, d)){
+        c = projTr12.color_fill;
+    }
     return c;
 }
