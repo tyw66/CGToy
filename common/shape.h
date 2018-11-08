@@ -55,13 +55,13 @@ public:
 };
 
 //! 三角形
-class Triangle2D : public Shape
+class Triangle3D : public Shape
 {
 public:
     Vec3 va, vb, vc; /**< 三个顶点*/
 
-    Triangle2D(){}
-    Triangle2D(const Vec3& v1,const Vec3& v2,const Vec3& v3,const Color& c){
+    Triangle3D(){}
+    Triangle3D(const Vec3& v1,const Vec3& v2,const Vec3& v3,const Color& c){
         va = v1; vb = v2; vc = v3;
         xPos = (v1.x+v2.x+v3.y)/3; yPos = (v1.y+v2.y+v3.y)/3;
         color_fill = c;
@@ -103,22 +103,63 @@ public:
         return f1>0 && f2 >0;
     }
 
-    Triangle2D projectTo2D(double d){
+    //    Triangle3D projectTo2D(double d){
+    //        Vec3 pva, pvb, pvc;
+
+    //        //        d = (va.z + vb.z + vc.z)/3;
+
+    //        pva.x = va.x * d / va.z;
+    //        pva.y = va.y * d / va.z;
+    //        pva.z = d;
+
+    //        pvb.x = vb.x * d / vb.z;
+    //        pvb.y = vb.y * d / vb.z;
+    //        pvb.z = d;
+
+    //        pvc.x = vc.x * d / vc.z;
+    //        pvc.y = vc.y * d / vc.z;
+    //        pvc.z = d;
+
+    //        return tyw::Triangle3D(pva, pvb, pvc, color_fill);
+    //    }
+
+    Triangle3D projectTo2D(Vec3 eye, double d){
+        Vec3 vva, vvb, vvc;//va在眼坐标下的坐标
+        vva = -eye + va;
+        vvb = -eye + vb;
+        vvc = -eye + vc;
+
         Vec3 pva, pvb, pvc;
 
-        pva.x = va.x * d / va.z;
-        pva.y = va.y * d / va.z;
+        //        d = (va.z + vb.z + vc.z)/3;
+
+        pva.x = vva.x * d / vva.z;
+        pva.y = vva.y * d / vva.z;
         pva.z = d;
 
-        pvb.x = vb.x * d / vb.z;
-        pvb.y = vb.y * d / vb.z;
+        pvb.x = vvb.x * d / vvb.z;
+        pvb.y = vvb.y * d / vvb.z;
         pvb.z = d;
 
-        pvc.x = vc.x * d / vc.z;
-        pvc.y = vc.y * d / vc.z;
+        pvc.x = vvc.x * d / vvc.z;
+        pvc.y = vvc.y * d / vvc.z;
         pvc.z = d;
 
-        return tyw::Triangle2D(pva, pvb, pvc, color_fill);
+        return tyw::Triangle3D(pva, pvb, pvc, color_fill);
+    }
+
+    void rotate(double xAngle, double yAngle, double zAngle){
+        va.rotateXAxis(xAngle);
+        va.rotateYAxis(yAngle);
+        va.rotateZAxis(zAngle);
+
+        vb.rotateXAxis(xAngle);
+        vb.rotateYAxis(yAngle);
+        vb.rotateZAxis(zAngle);
+
+        vc.rotateXAxis(xAngle);
+        vc.rotateYAxis(yAngle);
+        vc.rotateZAxis(zAngle);
     }
 
 };

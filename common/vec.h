@@ -96,6 +96,29 @@ public:
         return sqrt(x*x+y*y+z*z);
     }
 
+    ///绕坐标轴旋转
+    void rotateXAxis(double angle){
+        double rad = angle * 3.14/180.0;
+        double ty =cos(rad)*y+sin(rad)*z;
+        double tz = -sin(rad)*y+cos(rad)*z;
+        y = ty;
+        z = tz;
+    }
+    void rotateYAxis(double angle){
+        double rad = angle * 3.14/180.0;
+        double tx =cos(rad)*x-sin(rad)*z;
+        double tz = sin(rad)*x+cos(rad)*z;
+        x = tx;
+        z = tz;
+    }
+    void rotateZAxis(double angle){
+        double rad = angle * 3.14/180.0;
+        double tx = cos(rad)*x+sin(rad)*y;
+        double ty = -sin(rad)*x+cos(rad)*y;
+        x = tx;
+        y = ty;
+    }
+
 };
 
 ///vector3非成员函数

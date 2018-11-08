@@ -38,7 +38,7 @@ void Viewer::renderImg(int x, int y)
     update();
     //    m_time++;
 
-    qDebug()<< temp_timer.elapsed();
+//    qDebug()<< temp_timer.elapsed();
 }
 
 void Viewer::mouseMoveEvent(QMouseEvent *ev)
@@ -46,6 +46,7 @@ void Viewer::mouseMoveEvent(QMouseEvent *ev)
     mouse_posX = ev->x();
     mouse_posY = ev->y();
 
+//    qDebug()<< "mx:" <<mouse_posX << "my:" <<mouse_posY;
     renderImg(mouse_posX, mouse_posY);
 }
 

@@ -1,6 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H
-
+#include "vec.h"
 namespace Util
 {
 /**
@@ -42,6 +42,7 @@ void rotatePointXY(double x0, double y0, double& x1, double& y1, double angle, d
  */
 void transPointRTheta(double x, double y, double& r, double& theta);
 
+void rotatePointXYZ(Vec3 x0,Vec3 y0,Vec3 z0,Vec3& x1,Vec3& y1,Vec3& z1, double angle);
 
 }
 #endif // UTIL_H
