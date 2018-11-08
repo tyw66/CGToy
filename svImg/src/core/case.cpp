@@ -102,7 +102,7 @@ Color shader002(double x, double y, double mx, double my, int time)
     Util::scalePointXY(x,y,xPos,yPos,200,200);
     Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
 
-    double angle = my * 60.0 - 30;
+    double angle = my * 180.0 - 90;
     Util::rotatePointXY(xPos, yPos,xPos, yPos, angle, 0, 0);
 
     //! 加入对象构建场景
@@ -287,11 +287,11 @@ Color case006(double x, double y, double mx, double my, int time)
     Util::scalePointXY(x,y,xPos,yPos,200,200);
     Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
     double xMouse, yMouse;//鼠标
-    Util::scalePointXY(mx,my,xMouse,yMouse,90,90);
-    Util::movePointXY(xMouse, yMouse, xMouse, yMouse, 45, 45);
+    Util::scalePointXY(mx,my,xMouse,yMouse,180,180);
+    Util::movePointXY(xMouse, yMouse, xMouse, yMouse, 90, 90);
 
 
-    //画三角形
+    //画立方体
     Vec3 vtMouse(0,-60,10);
 
     Vec3 vt1(-30, -30, 30);
@@ -321,7 +321,7 @@ Color case006(double x, double y, double mx, double my, int time)
     tyw::Triangle3D triangle11(vt1,vt4,vt8,Color(255,255,125));
     tyw::Triangle3D triangle12(vt1,vt5,vt8,Color(125,125,255));
 
-    //绕轴旋转
+    ///绕轴旋转
     triangle1.rotate(-yMouse,xMouse,0);
     triangle2.rotate(-yMouse,xMouse,0);
     triangle3.rotate(-yMouse,xMouse,0);
@@ -335,7 +335,8 @@ Color case006(double x, double y, double mx, double my, int time)
     triangle11.rotate(-yMouse,xMouse,0);
     triangle12.rotate(-yMouse,xMouse,0);
 
-    double d = 80;//投影面 坐标
+    ///投影变换
+    double d = 100;//投影面 坐标
     Vec3 eye(0,0,100);
     tyw::Triangle3D projTr1 = triangle1.projectTo2D(eye,d);
     tyw::Triangle3D projTr2 = triangle2.projectTo2D(eye,d);
@@ -350,41 +351,79 @@ Color case006(double x, double y, double mx, double my, int time)
     tyw::Triangle3D projTr11 = triangle11.projectTo2D(eye,d);
     tyw::Triangle3D projTr12 = triangle12.projectTo2D(eye,d);
 
+    ///光栅化前后遮挡剔除还存在问题。projectTo2D不能这样写
+    double index = 10e9;
     if(projTr1.isContain(xPos,yPos, d)){
-        c = projTr1.color_fill;
+        if(projTr1.z_index < index){
+            c = projTr1.color_fill;
+            index = projTr1.z_index;
+        }
     }
     if(projTr2.isContain(xPos,yPos, d)){
-        c = projTr2.color_fill;
+        if(projTr2.z_index < index){
+            c = projTr2.color_fill;
+            index = projTr2.z_index;
+        }
     }
     if(projTr3.isContain(xPos,yPos, d)){
-        c = projTr3.color_fill;
+        if(projTr3.z_index < index){
+            c = projTr3.color_fill;
+            index = projTr3.z_index;
+        }
     }
     if(projTr4.isContain(xPos,yPos, d)){
-        c = projTr4.color_fill;
+        if(projTr4.z_index < index){
+            c = projTr4.color_fill;
+            index = projTr4.z_index;
+        }
     }
     if(projTr5.isContain(xPos,yPos, d)){
-        c = projTr5.color_fill;
+        if(projTr5.z_index < index){
+            c = projTr5.color_fill;
+            index = projTr5.z_index;
+        }
     }
     if(projTr6.isContain(xPos,yPos, d)){
-        c = projTr6.color_fill;
+        if(projTr6.z_index < index){
+            c = projTr6.color_fill;
+            index = projTr6.z_index;
+        }
     }
     if(projTr7.isContain(xPos,yPos, d)){
-        c = projTr7.color_fill;
+        if(projTr7.z_index < index){
+            c = projTr7.color_fill;
+            index = projTr7.z_index;
+        }
     }
     if(projTr8.isContain(xPos,yPos, d)){
-        c = projTr8.color_fill;
+        if(projTr8.z_index < index){
+            c = projTr8.color_fill;
+            index = projTr8.z_index;
+        }
     }
     if(projTr9.isContain(xPos,yPos, d)){
-        c = projTr9.color_fill;
+        if(projTr9.z_index < index){
+            c = projTr9.color_fill;
+            index = projTr9.z_index;
+        }
     }
     if(projTr10.isContain(xPos,yPos, d)){
-        c = projTr10.color_fill;
+        if(projTr10.z_index < index){
+            c = projTr10.color_fill;
+            index = projTr10.z_index;
+        }
     }
     if(projTr11.isContain(xPos,yPos, d)){
-        c = projTr11.color_fill;
+        if(projTr11.z_index < index){
+            c = projTr11.color_fill;
+            index = projTr11.z_index;
+        }
     }
     if(projTr12.isContain(xPos,yPos, d)){
-        c = projTr12.color_fill;
+        if(projTr12.z_index < index){
+            c = projTr12.color_fill;
+            index = projTr12.z_index;
+        }
     }
     return c;
 }

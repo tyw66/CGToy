@@ -6,7 +6,7 @@ QT += core gui widgets
 TEMPLATE = app
 
 
-#TARGET = demo
+TARGET = fun
 
 FORMS += \
     $$PWD/dialog.ui

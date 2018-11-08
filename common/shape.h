@@ -59,6 +59,7 @@ class Triangle3D : public Shape
 {
 public:
     Vec3 va, vb, vc; /**< 三个顶点*/
+    int z_index; /**< */
 
     Triangle3D(){}
     Triangle3D(const Vec3& v1,const Vec3& v2,const Vec3& v3,const Color& c){
@@ -129,9 +130,9 @@ public:
         vvb = -eye + vb;
         vvc = -eye + vc;
 
-        Vec3 pva, pvb, pvc;
+        z_index =  fabs((vva.z + vvb.z + vvc.z)/3 - d);
 
-        //        d = (va.z + vb.z + vc.z)/3;
+        Vec3 pva, pvb, pvc;
 
         pva.x = vva.x * d / vva.z;
         pva.y = vva.y * d / vva.z;
