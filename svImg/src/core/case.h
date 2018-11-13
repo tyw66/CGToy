@@ -43,7 +43,7 @@ int case03(double x, double y, double mx, double my, int time = 0);
  */
 Color case004(double x, double y, double mx, double my, int time = 0);
 
-double trace(double x, double y, double dx, double dy, tyw::Circle &circle);
+double trace(double x, double y, double dx, double dy, tyw::Circle &circle, double power);
 
 /**
  * @brief  画时锺

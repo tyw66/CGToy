@@ -6,8 +6,8 @@
 
 Color case000(double x, double y, double mx, double my, int time)
 {
-    //    Color color(250, 211, 94);    //背景填充
-    Color color(0,0,0);    //背景填充
+        Color color(250, 211, 94);    //背景填充
+    //Color color(0,0,0);    //背景填充
 
     //! 坐标转换
     double xPos, yPos;
@@ -213,19 +213,19 @@ int case03(double x, double y, double mx, double my, int time)
 Color case004(double x, double y, double mx, double my, int time)
 {
     //! 背景色
-    Color color(255, 255, 200);
+    Color color(255,255,240);
     double factor = 0;
 
     //! 坐标转换
     double xPos, yPos;
     Util::scalePointXY(x,y,xPos,yPos,200,200);
     Util::movePointXY(xPos, yPos, xPos, yPos, 100, 100);
-    double xCenter,yCenter;//圆心
-    Util::scalePointXY(mx,my,xCenter,yCenter,200,200);
-    Util::movePointXY(xCenter, yCenter, xCenter, yCenter, 100, 100);
+//    double xCenter,yCenter;//圆心
+//    Util::scalePointXY(mx,my,xCenter,yCenter,200,200);
+//    Util::movePointXY(xCenter, yCenter, xCenter, yCenter, 100, 100);
 
     //! 光源
-    double r = 20;
+    double r = 10+40*sin(1.57*mx);//鼠标左右控制大小
     tyw::Circle lightSource(0,0,Color(255,0,0),r);
 
     //    //! 物体
@@ -241,7 +241,7 @@ Color case004(double x, double y, double mx, double my, int time)
     //    factor = 1 - sdf/500;
 
     //!  用MC积分计算当前像素点处的光线强度
-    const int N = 8;
+    const int N = 20;
 
     for(int i = 0; i < N; ++i){
         //        double a = 6.28 *i / N; //分层采样
@@ -249,19 +249,19 @@ Color case004(double x, double y, double mx, double my, int time)
         double a = 6.28 * (i + (double)rand()/RAND_MAX) / N; //抖动采样
         double dx = cos(a);
         double dy = sin(a);
-        factor += trace(xPos,yPos,dx,dy,lightSource);
+        factor += trace(xPos,yPos,dx,dy,lightSource,my);
     }
     factor = (double)factor / N;
     return color*factor;
 }
 
-double trace(double x, double y, double dx, double dy, tyw::Circle &circle)
+double trace(double x, double y, double dx, double dy, tyw::Circle &circle,double power)
 {
     double t = 0.0;
     for(int j = 0; j < 10 && t < 200; ++j){
         double sdf = circle.getSDF(x + dx * t, y + dy * t) ;
         if(sdf < 1e-6 ) {
-            return 2.0;
+            return 4.0-power*4.0;
         }
         t += sdf;
     }
