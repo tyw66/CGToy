@@ -10,6 +10,8 @@ include($$PWD/core/core.pri)
 include($$PWD/gui/gui.pri) #界面
 #include($$PWD/cmd/cmd.pri) #命令行
 
+RC_ICONS = hehe.ico
+
 
 QMAKE_CXXFLAGS +=  -std=c++11
 QMAKE_CXXFLAGS += -fopenmp

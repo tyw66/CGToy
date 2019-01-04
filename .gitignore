@@ -11,3 +11,4 @@ build*
 *.user*
 *.o
 
+bin
